@@ -16,19 +16,22 @@ interface FullQuestion {
 	question: string;
 	answer: string;
 	value: number;
+	image?: string;
+	youtube?: string;
 }
 
 let socket: Socket | null = null;
 
 export const connected = writable(false);
-export const gameState = writable<ClientGameState>({
+export const gameState = writable<ClientGameState & { showAnswer?: boolean }>({
 	players: [],
 	currentQuestion: null,
 	currentCategory: null,
 	answeredQuestions: [],
 	buzzerOrder: [],
 	buzzerLocked: true,
-	gamePhase: 'lobby'
+	gamePhase: 'lobby',
+	showAnswer: false
 });
 export const gameConfig = writable<GameConfigClient>({
 	title: 'Jeopardy!',
@@ -37,6 +40,7 @@ export const gameConfig = writable<GameConfigClient>({
 });
 export const fullQuestion = writable<FullQuestion | null>(null);
 export const playerId = writable<string>('');
+export const buzzerSound = writable<{ playerName: string } | null>(null);
 
 export function initSocket() {
 	if (socket) return socket;
@@ -57,7 +61,7 @@ export function initSocket() {
 		connected.set(false);
 	});
 
-	socket.on('gameState', (state: ClientGameState) => {
+	socket.on('gameState', (state: ClientGameState & { showAnswer?: boolean }) => {
 		gameState.set(state);
 	});
 
@@ -67,6 +71,12 @@ export function initSocket() {
 
 	socket.on('fullQuestion', (question: FullQuestion) => {
 		fullQuestion.set(question);
+	});
+
+	socket.on('buzzerSound', (data: { playerName: string }) => {
+		buzzerSound.set(data);
+		// Clear after a short delay
+		setTimeout(() => buzzerSound.set(null), 100);
 	});
 
 	return socket;
@@ -108,6 +118,10 @@ export function clearBuzzers() {
 	socket?.emit('clearBuzzers');
 }
 
+export function revealAnswer() {
+	socket?.emit('revealAnswer');
+}
+
 export function correctAnswer(targetPlayerId: string) {
 	socket?.emit('correctAnswer', targetPlayerId);
 	fullQuestion.set(null);
@@ -125,6 +139,10 @@ export function skipQuestion() {
 export function showLeaderboard() {
 	socket?.emit('showLeaderboard');
 	fullQuestion.set(null);
+}
+
+export function backToGame() {
+	socket?.emit('backToGame');
 }
 
 export function resetGame() {

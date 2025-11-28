@@ -18,14 +18,24 @@
 	let hasJoined = $state(false);
 	let buzzed = $state(false);
 
+	const STORAGE_KEY = 'jeopardy_username';
+
 	onMount(() => {
 		if (browser) {
 			initSocket();
+			
+			// Check for saved username for session restoration
+			const savedUsername = localStorage.getItem(STORAGE_KEY);
+			if (savedUsername) {
+				username = savedUsername;
+			}
 		}
 	});
 
 	function handleJoin() {
 		if (username.trim()) {
+			// Save username to localStorage for session restoration
+			localStorage.setItem(STORAGE_KEY, username.trim());
 			playerJoin(username.trim());
 			hasJoined = true;
 		}

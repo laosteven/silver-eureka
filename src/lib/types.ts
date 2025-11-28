@@ -13,6 +13,8 @@ export interface Question {
 	value: number;
 	question: string;
 	answer: string;
+	image?: string;
+	youtube?: string;
 }
 
 export interface Player {

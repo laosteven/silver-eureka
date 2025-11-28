@@ -1,5 +1,6 @@
 # Jeopardy Game Configuration
 # Customize your game by editing this file
+# You can also set the title via GAME_TITLE environment variable
 
 title: "Jeopardy!"
 countdown: 30  # Seconds to answer (future feature)
@@ -10,6 +11,8 @@ categories:
       - value: 100
         question: "This planet is known as the Red Planet"
         answer: "What is Mars?"
+        # Optional: Add an image URL (imgur, etc.)
+        # image: "https://i.imgur.com/example.jpg"
       - value: 200
         question: "This force keeps us on the ground"
         answer: "What is gravity?"
@@ -22,6 +25,8 @@ categories:
       - value: 500
         question: "This scientist developed the theory of relativity"
         answer: "Who is Albert Einstein?"
+        # Optional: Add a YouTube video URL
+        # youtube: "https://www.youtube.com/watch?v=example"
 
   - name: "History"
     questions:
