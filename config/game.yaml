@@ -1,8 +1,7 @@
-# Jeopardy Game Configuration
+# Trivia Game Configuration
 # Customize your game by editing this file
-# You can also set the title via GAME_TITLE environment variable
+# Note: Game title is set via GAME_TITLE environment variable in .env
 
-title: "Jeopardy!"
 countdown: 30  # Seconds to answer (future feature)
 
 categories:

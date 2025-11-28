@@ -1,4 +1,4 @@
-# Jeopardy
+# Trivia & Chill
 
 A self-hosted Jeopardy game built with SvelteKit and shadcn-svelte. Host interactive trivia games where friends can join by scanning a QR code!
 
@@ -103,7 +103,7 @@ categories:
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `title` | Game title displayed on screens | "Jeopardy!" |
+| `title` | Game title displayed on screens | "Trivia & Chill" |
 | `countdown` | Seconds allowed to answer (future feature) | 30 |
 | `categories` | Array of category objects | Default categories |
 
@@ -130,7 +130,7 @@ categories:
 |----------|-------------|---------|
 | `PORT` | Server port | 3000 |
 | `CONFIG_PATH` | Path to game YAML config | /config/game.yaml |
-| `GAME_TITLE` | Game title (overrides YAML) | "Jeopardy!" |
+| `GAME_TITLE` | Game title | "Trivia & Chill" |
 
 ## License
 

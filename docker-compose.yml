@@ -1,12 +1,12 @@
 services:
-  jeopardy:
+  trivia-n-chill:
     build: .
     ports:
       - "3000:3000"
     environment:
       - PORT=3000
       - CONFIG_PATH=/config/game.yaml
-      - GAME_TITLE=${GAME_TITLE:-Jeopardy!}
+      - GAME_TITLE=${GAME_TITLE:-Trivia & Chill}
     volumes:
       - ./config:/config:ro
     restart: unless-stopped

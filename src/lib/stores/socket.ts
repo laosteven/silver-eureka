@@ -34,7 +34,7 @@ export const gameState = writable<ClientGameState & { showAnswer?: boolean }>({
 	showAnswer: false
 });
 export const gameConfig = writable<GameConfigClient>({
-	title: 'Jeopardy!',
+	title: '',
 	countdown: 30,
 	categories: []
 });
