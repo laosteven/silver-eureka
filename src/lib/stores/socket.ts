@@ -41,8 +41,12 @@ export const playerId = writable<string>('');
 export function initSocket() {
 	if (socket) return socket;
 
-	const socketUrl = typeof window !== 'undefined' ? window.location.origin : '';
-	socket = io(socketUrl);
+	// Only initialize socket on the client side
+	if (typeof window === 'undefined') {
+		return null;
+	}
+
+	socket = io(window.location.origin);
 
 	socket.on('connect', () => {
 		connected.set(true);
