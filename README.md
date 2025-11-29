@@ -4,79 +4,39 @@ A self-hosted Jeopardy game built with SvelteKit and shadcn-svelte. Host interac
 
 ## Screenshots
 
-### Landing page
-
-![Landing](https://imgur.com/8feG4Ge.png)
-
-### Lobby & join
-
-![Lobby](https://imgur.com/hVTWca2.png)
-
-### Host game board
-
 ![Gameboard](https://imgur.com/MmIZtxh.png)
 
 ![Question](https://imgur.com/vkMhdQq.png)
-
-### Player view
-
-![Landing](https://imgur.com/HPxhydK.png)
-
-![Stand by](https://imgur.com/yT45TU2.png)
-
-![Rename modal](https://imgur.com/XpG2qRL.png)
-
-![Buzzer](https://imgur.com/XjIsWC0.png)
-
-![Buzzed](https://imgur.com/SIizWcM.png)
-
-### Player management
-
-![Management](https://imgur.com/JQN4lSq.png)
-
-### Leaderboard
-
-![Leaderboard](https://imgur.com/Zlf8Kd3.png)
-
-## Features
-
-- 🎮 **Host controls**: Full control over game flow, question selection, and scoring
-- 📱 **QR code join**: Players can easily join by scanning a QR code
-- ⚡ **Real-time**: WebSocket-powered buzzer system with instant feedback and sound alerts
-- 🏆 **Leaderboard**: Track scores and display rankings at the end
-- ⚙️ **Customizable**: Configure questions, categories, and game settings via YAML or environment variables
-- 🖼️ **Media support**: Add images (imgur, etc.) and YouTube videos to questions
-- 🔄 **Session restore**: Players can restore their session if they refresh by using the same username
-- 🐳 **Docker ready**: Easy self-hosting with Docker Compose
 
 ## Quick Start
 
 ### Using Docker Compose (Recommended)
 
-1. (Optional) Customize your game:
-   - Edit `config/game.yaml` for questions
-   - Set `GAME_TITLE` in environment for custom title
+1. Get the `.env` file
 
-2. Use this snippet:
-
-   ```yml
-   version: "3.8"
-   services:
-   trivia:
-      image: laosteven/trivia-n-chill:latest
-      container_name: trivia-n-chill
-      restart: unless-stopped
-      ports:
-         - "3000:3000"
-      environment:
-         PORT: 3000
-         NODE_ENV: production
-         CONFIG_PATH: /app/config/game.yaml
-      volumes:
-         - ./game.yaml:/app/config/game.yaml:ro
+   ```bash
+   wget -O .env https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/.env.example
    ```
 
-3. Open `http://localhost:3000` in your browser
+2. Get the `game.yml` file
+
+   ```bash
+   wget -O game.yml https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/config/game.yml
+   ```
+
+3. Get the docker compose file
+
+   ```bash
+   wget -O docker-compose.yml https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/docker-compose.prod.yml
+   ```
+
+4. Start the container:
+
+   ```bash
+   docker compose up -d
+   ```
+
+5. Open `http://localhost:3000` in your browser
 
 ### Local Development
 
@@ -101,6 +61,17 @@ A self-hosted Jeopardy game built with SvelteKit and shadcn-svelte. Host interac
 
 4. Open `http://localhost:5173` in your browser
 
+## Features
+
+- 🎮 **Host controls**: Full control over game flow, question selection, and scoring
+- 📱 **QR code join**: Players can easily join by scanning a QR code
+- ⚡ **Real-time**: WebSocket-powered buzzer system with instant feedback and sound alerts
+- 🏆 **Leaderboard**: Track scores and display rankings at the end
+- ⚙️ **Customizable**: Configure questions, categories, and game settings via YAML or environment variables
+- 🖼️ **Media support**: Add images (imgur, etc.) and YouTube videos to questions
+- 🔄 **Session restore**: Players can restore their session if they refresh by using the same username
+- 🐳 **Docker ready**: Easy self-hosting with Docker Compose
+
 ## How to Play
 
 ### For the Host
@@ -124,7 +95,7 @@ A self-hosted Jeopardy game built with SvelteKit and shadcn-svelte. Host interac
 
 ## Configuration
 
-The game can be customized by editing the `config/game.yaml` file:
+The game can be customized by editing the `config/game.yml` file:
 
 ```yaml
 title: "My Trivia Night!"
@@ -176,8 +147,38 @@ categories:
 | Variable      | Description              | Default           |
 | ------------- | ------------------------ | ----------------- |
 | `PORT`        | Server port              | 3000              |
-| `CONFIG_PATH` | Path to game YAML config | /config/game.yaml |
+| `CONFIG_PATH` | Path to game YAML config | /config/game.yml |
 | `GAME_TITLE`  | Game title               | "Trivia & Chill"  |
+
+## More screenshots
+
+### Landing page
+
+![Landing](https://imgur.com/8feG4Ge.png)
+
+### Lobby & join
+
+![Lobby](https://imgur.com/hVTWca2.png)
+
+### Player view
+
+![Landing](https://imgur.com/HPxhydK.png)
+
+![Stand by](https://imgur.com/yT45TU2.png)
+
+![Rename modal](https://imgur.com/XpG2qRL.png)
+
+![Buzzer](https://imgur.com/XjIsWC0.png)
+
+![Buzzed](https://imgur.com/SIizWcM.png)
+
+### Player management
+
+![Management](https://imgur.com/JQN4lSq.png)
+
+### Leaderboard
+
+![Leaderboard](https://imgur.com/Zlf8Kd3.png)
 
 ## License
 

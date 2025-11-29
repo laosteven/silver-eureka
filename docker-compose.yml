@@ -5,7 +5,7 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - CONFIG_PATH=/config/game.yaml
+      - CONFIG_PATH=/config/game.yml
       - GAME_TITLE=${GAME_TITLE:-Trivia & Chill}
     volumes:
       - ./config:/config:ro

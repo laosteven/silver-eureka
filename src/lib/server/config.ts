@@ -1,7 +1,7 @@
-import { parse } from "yaml";
-import { readFileSync, existsSync, watch } from "fs";
-import path from "path";
 import type { GameConfig } from "$lib/types";
+import { existsSync, readFileSync, watch } from "fs";
+import path from "path";
+import { parse } from "yaml";
 
 // Helper to get env var without quotes
 function getEnvTitle(): string {
@@ -22,7 +22,7 @@ const FALLBACK: GameConfig = {
 function resolvePath(): string {
   const envPath = process.env.CONFIG_PATH;
   if (envPath && existsSync(envPath)) return envPath;
-  const local = path.resolve("config/game.yaml");
+  const local = path.resolve("config/game.yml");
   if (existsSync(local)) return local;
   return envPath || local; // may be missing; caller handles
 }
@@ -56,7 +56,7 @@ export function watchGameConfig(onChange: (cfg: GameConfig) => void) {
     watch(file, { persistent: false }, () => {
       const cfg = loadGameConfig();
       onChange(cfg);
-      console.log("[config] Reloaded game.yaml");
+      console.log("[config] Reloaded game.yml");
     });
   } catch (err) {
     console.error("Failed to watch config file", err);

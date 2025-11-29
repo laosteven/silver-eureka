@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  trivia:
+    image: laosteven/trivia-n-chill:latest
+    container_name: trivia-n-chill
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      CONFIG_PATH: /app/config/game.yml
+    volumes:
+      - ./game.yml:/app/config/game.yml:ro
