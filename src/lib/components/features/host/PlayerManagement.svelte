@@ -14,7 +14,6 @@
   let editingId = $state<string | null>(null);
 
   $effect(() => {
-    const next: Record<string, string> = {};
     const nextNames: Record<string, string> = {};
     const nextScores: Record<string, number> = {};
     for (const player of p.players) {

@@ -67,7 +67,7 @@ export class PlayerHandler {
 
     // Add the new player
     const restoredScore = this.playerService.getStoredScore(key);
-    const player = this.playerService.addPlayer(socket.id, cleanName, restoredScore);
+    this.playerService.addPlayer(socket.id, cleanName, restoredScore);
 
     socket.join("players");
     console.log(`Player joined: ${cleanName} (restored score: ${restoredScore})`);
@@ -121,7 +121,6 @@ export class PlayerHandler {
     }
 
     const oldName = player.name;
-    const currentScore = player.score;
 
     // Update player name and handle score restoration
     const restoredScore = this.playerService.updatePlayerName(

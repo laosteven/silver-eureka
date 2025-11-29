@@ -1,4 +1,5 @@
 <script lang="ts">
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const p = $props<{ fallback?: string; children?: any }>();
   let hasError = $state(false);
   let errorMessage = $state<string | null>(null);

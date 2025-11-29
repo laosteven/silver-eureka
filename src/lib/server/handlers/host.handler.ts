@@ -3,7 +3,7 @@
  * Handles all host-related socket events: join, start game, score/name updates, etc.
  */
 
-import type { Socket, Server as SocketIOServer } from "socket.io";
+import type { Server as SocketIOServer, Socket } from "socket.io";
 import type { PlayerService } from "../services/player.service";
 import type { GameStateService } from "../services/game-state.service";
 import type { GameConfig } from "../../types";

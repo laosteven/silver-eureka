@@ -39,7 +39,7 @@
 
   async function handleJoin() {
     if (player.username.trim()) {
-      const result = await player.join(player.username);
+      await player.join(player.username);
       // Error handling is done in the composable
     }
   }

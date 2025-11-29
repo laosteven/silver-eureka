@@ -51,7 +51,7 @@ export class PlayerService {
   findDisconnectedPlayer(username: string): Player | undefined {
     const key = username.toLowerCase();
     const entry = Array.from(this.players.entries()).find(
-      ([_, p]) => p.name.toLowerCase() === key && !p.connected
+      ([, p]) => p.name.toLowerCase() === key && !p.connected
     );
     return entry ? entry[1] : undefined;
   }

@@ -16,7 +16,7 @@ export function useBuzzer() {
     if (!browser) return;
 
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = new (window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       const buffer = audioContext.createBuffer(
         1,
         audioContext.sampleRate * 0.2,
@@ -64,7 +64,7 @@ export function useBuzzer() {
     if (!browser) return;
 
     $effect(() => {
-      let signal: any;
+      let signal: null | { playerName: string } = null;
       buzzerSound.subscribe((v) => (signal = v))();
       if (signal) {
         play();

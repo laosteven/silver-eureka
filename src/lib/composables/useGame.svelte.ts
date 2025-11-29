@@ -3,6 +3,7 @@
  * Manages game state and flow for host
  */
 
+import { get } from "svelte/store";
 import {
   startGame as socketStartGame,
   selectQuestion as socketSelectQuestion,
@@ -30,8 +31,7 @@ export function useGame() {
    * Check if a question has been answered
    */
   function isQuestionAnswered(category: string, value: number): boolean {
-    let state: any;
-    gameState.subscribe((v) => (state = v))();
+    const state = get(gameState);
     return state.answeredQuestions.includes(`${category}-${value}`);
   }
 
@@ -48,8 +48,7 @@ export function useGame() {
    * Get sorted leaderboard
    */
   function getLeaderboard(): Player[] {
-    let state: any;
-    gameState.subscribe((v) => (state = v))();
+    const state = get(gameState);
     return [...state.players].sort((a, b) => b.score - a.score);
   }
 

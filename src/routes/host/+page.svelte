@@ -12,7 +12,6 @@
     fullQuestion,
     connected,
   } from "$lib/stores/socket";
-  import CardDescription from "$lib/components/ui/card/card-description.svelte";
   import { useGame } from "$lib/composables/useGame.svelte";
   import { useQRCode } from "$lib/composables/useQRCode.svelte";
   import { useBuzzer } from "$lib/composables/useBuzzer.svelte";
@@ -20,7 +19,6 @@
   import HostControls from "$lib/components/features/host/HostControls.svelte";
   import GameBoard from "$lib/components/features/game/GameBoard.svelte";
   import QuestionCard from "$lib/components/features/game/QuestionCard.svelte";
-  import HostQuestionControls from "$lib/components/features/host/HostQuestionControls.svelte";
   import Leaderboard from "$lib/components/features/leaderboard/Leaderboard.svelte";
 
   const game = useGame();

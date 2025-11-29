@@ -4,6 +4,7 @@
  */
 
 import { browser } from "$app/environment";
+import type { ClientGameState } from "$lib/types";
 import {
   playerJoin as socketPlayerJoin,
   playerRename as socketPlayerRename,
@@ -24,7 +25,16 @@ export function usePlayer() {
   let buzzed = $state(false);
 
   // Subscribe to stores for reactivity
-  let currentGameState = $state<any>({});
+  let currentGameState = $state<ClientGameState & { showAnswer?: boolean }>({
+    players: [],
+    currentQuestion: null,
+    currentCategory: null,
+    answeredQuestions: [],
+    buzzerOrder: [],
+    buzzerLocked: true,
+    gamePhase: "lobby",
+    showAnswer: false,
+  });
   let currentPlayerId = $state("");
 
   // Use $effect to keep local state in sync with stores
@@ -134,7 +144,7 @@ export function usePlayer() {
    * Check if current player has buzzed (reactive)
    */
   const hasBuzzedValue = $derived(
-    currentGameState.buzzerOrder?.some((b: any) => b.playerId === currentPlayerId) ?? false
+    currentGameState.buzzerOrder?.some((b) => b.playerId === currentPlayerId) ?? false
   );
 
   /**
@@ -143,7 +153,7 @@ export function usePlayer() {
   const buzzPosition = $derived.by(() => {
     if (!currentGameState.buzzerOrder) return 0;
     const index = currentGameState.buzzerOrder.findIndex(
-      (b: any) => b.playerId === currentPlayerId
+      (b) => b.playerId === currentPlayerId
     );
     return index + 1;
   });
