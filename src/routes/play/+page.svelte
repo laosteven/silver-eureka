@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
   import { Button } from "$lib/components/ui/button";
+  import { Toaster, toast } from "svelte-sonner";
   import {
     Card,
     CardContent,
@@ -22,7 +23,6 @@
     playerRename,
     hostNotification,
   } from "$lib/stores/socket";
-  import CardFooter from "$lib/components/ui/card/card-footer.svelte";
 
   let username = $state("");
   let hasJoined = $state(false);
@@ -122,6 +122,13 @@
   $effect(() => {
     if ($gameState.gamePhase !== "question") {
       buzzed = false;
+    }
+  });
+
+  // Show toast notification when host updates something
+  $effect(() => {
+    if ($hostNotification) {
+      toast.info($hostNotification.message);
     }
   });
 </script>
@@ -369,35 +376,6 @@
       </div>
     </div>
   {/if}
-
-  <!-- Host Notification Toast -->
-  {#if $hostNotification}
-    <div
-      class="fixed top-4 right-4 bg-black/60 text-white px-6 py-4 rounded-lg shadow-2xl z-50 max-w-md animate-slide-in"
-      role="alert"
-    >
-      <div class="flex items-start gap-3">
-        <div>
-          <p class="text-sm">{$hostNotification.message}</p>
-        </div>
-      </div>
-    </div>
-  {/if}
 </div>
 
-<style>
-  @keyframes slide-in {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  .animate-slide-in {
-    animation: slide-in 0.3s ease-out;
-  }
-</style>
+<Toaster richColors position="top-right" />
