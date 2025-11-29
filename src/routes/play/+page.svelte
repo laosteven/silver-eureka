@@ -20,6 +20,7 @@
     connected,
     joinError,
     playerRename,
+    hostNotification,
   } from "$lib/stores/socket";
   import CardFooter from "$lib/components/ui/card/card-footer.svelte";
 
@@ -295,7 +296,7 @@
   <!-- Rename Modal -->
   {#if showRenameModal}
     <div
-      class="fixed inset-0 bg-black/75 flex items-center justify-center p-4 z-50"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
       onclick={closeRenameModal}
       onkeydown={(e) => e.key === "Escape" && closeRenameModal()}
       role="button"
@@ -368,4 +369,35 @@
       </div>
     </div>
   {/if}
+
+  <!-- Host Notification Toast -->
+  {#if $hostNotification}
+    <div
+      class="fixed top-4 right-4 bg-black/60 text-white px-6 py-4 rounded-lg shadow-2xl z-50 max-w-md animate-slide-in"
+      role="alert"
+    >
+      <div class="flex items-start gap-3">
+        <div>
+          <p class="text-sm">{$hostNotification.message}</p>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
+
+<style>
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+</style>

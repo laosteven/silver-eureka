@@ -42,6 +42,7 @@ export const fullQuestion = writable<FullQuestion | null>(null);
 export const playerId = writable<string>("");
 export const buzzerSound = writable<{ playerName: string } | null>(null);
 export const joinError = writable<string | null>(null);
+export const hostNotification = writable<{ message: string } | null>(null);
 
 export function initSocket() {
   if (socket) return socket;
@@ -92,6 +93,12 @@ export function initSocket() {
     if (typeof window !== "undefined") {
       localStorage.setItem("jeopardy-game_username", data.newUsername);
     }
+  });
+
+  socket.on("hostNotification", (data: { message: string }) => {
+    hostNotification.set(data);
+    // Auto-clear after 5 seconds
+    setTimeout(() => hostNotification.set(null), 5000);
   });
 
   return socket;
@@ -210,6 +217,25 @@ export function playerRename(
         if (!result.success) {
           joinError.set(result.error || "Failed to rename");
         }
+        resolve(result);
+      }
+    );
+  });
+}
+
+export function hostUpdatePlayerName(
+  playerId: string,
+  newName: string
+): Promise<{ success: boolean; error?: string }> {
+  return new Promise((resolve) => {
+    if (!socket) {
+      resolve({ success: false, error: "Not connected" });
+      return;
+    }
+    socket.emit(
+      "hostUpdatePlayerName",
+      { playerId, newName },
+      (result: { success: boolean; error?: string }) => {
         resolve(result);
       }
     );

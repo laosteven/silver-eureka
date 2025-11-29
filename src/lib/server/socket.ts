@@ -119,18 +119,31 @@ export function initSocketServer(server: HTTPServer) {
 
         const key = cleanName.toLowerCase();
 
-        // Check if username is already taken by an active player
+        // Check if username is already taken by an active/connected player
         const existingPlayer = Array.from(gameState.players.values()).find(
-          (p) => p.name.toLowerCase() === key
+          (p) => p.name.toLowerCase() === key && p.connected
         );
 
         if (existingPlayer) {
           console.log(
-            `Player join rejected: username "${cleanName}" already taken`
+            `Player join rejected: username "${cleanName}" already taken by connected player`
           );
           callback?.({ success: false, error: "Username already taken" });
           socket.emit("joinError", { error: "Username already taken" });
           return;
+        }
+
+        // Check if there's a disconnected player with this name - remove them
+        const disconnectedPlayer = Array.from(gameState.players.entries()).find(
+          ([_, p]) => p.name.toLowerCase() === key && !p.connected
+        );
+
+        if (disconnectedPlayer) {
+          const [oldId, oldPlayer] = disconnectedPlayer;
+          console.log(
+            `Removing disconnected player "${oldPlayer.name}" (${oldId}) to allow new connection`
+          );
+          gameState.players.delete(oldId);
         }
 
         const restoredScore = playerScores.get(key) ?? 0;
@@ -138,6 +151,7 @@ export function initSocketServer(server: HTTPServer) {
           id: socket.id,
           name: cleanName,
           score: restoredScore,
+          connected: true,
         };
         gameState.players.set(socket.id, player);
         playerScores.set(key, restoredScore); // ensure map has entry
@@ -405,13 +419,96 @@ export function initSocketServer(server: HTTPServer) {
         if (!socket.rooms.has("host")) return; // only host can update scores
         const player = gameState.players.get(data.playerId);
         if (player) {
+          const oldScore = player.score;
           player.score = data.newScore;
           playerScores.set(player.name.toLowerCase(), data.newScore);
           console.log(
             `Host updated ${player.name}'s score to ${data.newScore}`
           );
+          
+          // Notify the player
+          const scoreDiff = data.newScore - oldScore;
+          const diffSign = scoreDiff >= 0 ? '+' : '';
+          io?.to(data.playerId).emit("hostNotification", {
+            message: `Host updated your score: $${oldScore} → $${data.newScore} (${diffSign}${scoreDiff})`
+          });
+          
           broadcastGameState();
         }
+      }
+    );
+
+    // Host manually updates a player's name
+    socket.on(
+      "hostUpdatePlayerName",
+      (
+        data: { playerId: string; newName: string },
+        callback?: (result: { success: boolean; error?: string }) => void
+      ) => {
+        if (!socket.rooms.has("host")) {
+          callback?.({ success: false, error: "Only host can update names" });
+          return;
+        }
+
+        const player = gameState.players.get(data.playerId);
+        if (!player) {
+          callback?.({ success: false, error: "Player not found" });
+          return;
+        }
+
+        const cleanName = (data.newName || "").trim();
+        if (!cleanName) {
+          callback?.({ success: false, error: "Username cannot be empty" });
+          return;
+        }
+
+        const newKey = cleanName.toLowerCase();
+        const oldKey = player.name.toLowerCase();
+
+        // Check if new username is already taken by another active player
+        const existingPlayer = Array.from(gameState.players.values()).find(
+          (p) => p.id !== data.playerId && p.name.toLowerCase() === newKey
+        );
+
+        if (existingPlayer) {
+          console.log(
+            `Host name update rejected: username "${cleanName}" already taken`
+          );
+          callback?.({ success: false, error: "Username already taken" });
+          return;
+        }
+
+        const oldName = player.name;
+        const currentScore = player.score;
+
+        // Update player name
+        player.name = cleanName;
+
+        // Update score persistence map
+        if (oldKey !== newKey) {
+          playerScores.set(newKey, currentScore);
+          // Keep old name's score in case they want to switch back
+          playerScores.set(oldKey, currentScore);
+        }
+
+        // Update buzzer order if player is in it
+        gameState.buzzerOrder = gameState.buzzerOrder.map((b) =>
+          b.playerId === data.playerId ? { ...b, playerName: cleanName } : b
+        );
+
+        // Notify the player's client to update localStorage
+        io?.to(data.playerId).emit("updateUsername", {
+          newUsername: cleanName,
+        });
+
+        // Notify the player about the name change
+        io?.to(data.playerId).emit("hostNotification", {
+          message: `Host updated your name: "${oldName}" → "${cleanName}"`
+        });
+
+        console.log(`Host updated player name: ${oldName} -> ${cleanName}`);
+        callback?.({ success: true });
+        broadcastGameState();
       }
     );
 
@@ -420,7 +517,8 @@ export function initSocketServer(server: HTTPServer) {
       const player = gameState.players.get(socket.id);
       if (player) {
         console.log(`Player disconnected: ${player.name}`);
-        gameState.players.delete(socket.id);
+        // Mark as disconnected instead of removing
+        player.connected = false;
         gameState.buzzerOrder = gameState.buzzerOrder.filter(
           (b) => b.playerId !== socket.id
         );

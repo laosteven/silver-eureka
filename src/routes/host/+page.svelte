@@ -28,11 +28,13 @@
     revealAnswer,
     cancelQuestion,
     updatePlayerScore,
+    hostUpdatePlayerName,
     connected,
     buzzerSound,
     reloadConfig,
   } from "$lib/stores/socket";
   import QRCode from "qrcode";
+  import CardDescription from "$lib/components/ui/card/card-description.svelte";
 
   let qrCodeDataUrl = $state("");
   let joinUrl = $state("");
@@ -41,6 +43,8 @@
   let editingPlayer: { id: string; name: string; score: number } | null =
     $state(null);
   let editScoreValue = $state("");
+  let editNameValue = $state("");
+  let editError = $state<string | null>(null);
   let buzzerAudio: HTMLAudioElement | null = $state(null);
 
   onMount(() => {
@@ -140,12 +144,27 @@
   }) {
     editingPlayer = player;
     editScoreValue = player.score.toString();
+    editNameValue = player.name;
+    editError = null;
   }
 
-  function saveScore() {
+  async function saveScore() {
     if (editingPlayer) {
+      // Update name if changed
+      if (editNameValue.trim() && editNameValue.trim() !== editingPlayer.name) {
+        const nameResult = await hostUpdatePlayerName(
+          editingPlayer.id,
+          editNameValue.trim()
+        );
+        if (!nameResult.success) {
+          editError = nameResult.error || "Failed to update name";
+          return;
+        }
+      }
+
+      // Update score if changed
       const newScore = parseInt(editScoreValue, 10);
-      if (!isNaN(newScore)) {
+      if (!isNaN(newScore) && newScore !== editingPlayer.score) {
         updatePlayerScore(editingPlayer.id, newScore);
       }
     }
@@ -155,6 +174,8 @@
   function closeScoreEditor() {
     editingPlayer = null;
     editScoreValue = "";
+    editNameValue = "";
+    editError = null;
   }
 
   function getYoutubeEmbedUrl(url: string): string {
@@ -225,7 +246,12 @@
                 </h3>
                 <div class="space-y-2 max-h-64 overflow-y-auto">
                   {#each $gameState.players as player}
-                    <div class="p-2 bg-secondary rounded-lg">{player.name}</div>
+                    <div class="p-2 bg-secondary rounded-lg flex items-center justify-between">
+                      <span>{player.name}</span>
+                      {#if !player.connected}
+                        <span class="text-xs text-red-600 font-semibold">Disconnected</span>
+                      {/if}
+                    </div>
                   {/each}
                   {#if $gameState.players.length === 0}
                     <p class="text-muted-foreground">
@@ -299,10 +325,15 @@
           {#each $gameState.players as player}
             <button onclick={() => openScoreEditor(player)} class="text-left">
               <Card
-                class="text-center hover:bg-accent transition-colors cursor-pointer"
+                class="text-center hover:bg-accent transition-colors cursor-pointer {!player.connected ? 'opacity-60' : ''}"
               >
                 <CardContent class="p-3">
-                  <p class="font-semibold truncate">{player.name}</p>
+                  <div class="flex items-center justify-center gap-1">
+                    <p class="font-semibold truncate">{player.name}</p>
+                    {#if !player.connected}
+                      <span class="text-xs text-red-600">⚠️</span>
+                    {/if}
+                  </div>
                   <p class="text-xl font-bold text-blue-600">${player.score}</p>
                 </CardContent>
               </Card>
@@ -468,14 +499,19 @@
                       ? 'bg-gray-100'
                       : index === 2
                         ? 'bg-orange-100'
-                        : 'bg-secondary'}"
+                        : 'bg-secondary'} {!player.connected ? 'opacity-60' : ''}"
                 >
                   <div class="flex items-center gap-4">
                     <span class="text-3xl">
                       {#if index === 0}🥇{:else if index === 1}🥈{:else if index === 2}🥉{:else}{index +
                           1}{/if}
                     </span>
-                    <span class="font-semibold text-xl">{player.name}</span>
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold text-xl">{player.name}</span>
+                      {#if !player.connected}
+                        <span class="text-xs text-red-600 font-semibold">⚠️ Disconnected</span>
+                      {/if}
+                    </div>
                   </div>
                   <span class="text-2xl font-bold text-blue-600"
                     >${player.score}</span
@@ -561,15 +597,12 @@
     >
       <Card class="w-full max-w-md mx-4">
         <CardHeader>
-          <CardTitle class="text-center">Edit score</CardTitle>
+          <CardTitle>Edit score</CardTitle>
+          <CardDescription
+            >Modify the score for the selected player below</CardDescription
+          >
         </CardHeader>
         <CardContent class="space-y-4">
-          <div class="text-center">
-            <p class="text-lg font-semibold mb-2">{editingPlayer.name}</p>
-            <p class="text-sm text-muted-foreground mb-4">
-              Current score: ${editingPlayer.score}
-            </p>
-          </div>
           <form
             onsubmit={(e) => {
               e.preventDefault();
@@ -578,8 +611,20 @@
             class="space-y-4"
           >
             <div>
+              <label for="name-input" class="block text-sm font-medium mb-2"
+                >Player name</label
+              >
+              <input
+                id="name-input"
+                type="text"
+                bind:value={editNameValue}
+                maxlength="20"
+                class="w-full px-4 py-2 text-lg border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
               <label for="score-input" class="block text-sm font-medium mb-2"
-                >New score</label
+                >Score</label
               >
               <input
                 id="score-input"
@@ -588,11 +633,26 @@
                 class="w-full px-4 py-2 text-lg border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div class="flex justify-center gap-4">
-              <Button type="button" onclick={closeScoreEditor} variant="outline"
-                >Cancel</Button
+            {#if editError}
+              <div
+                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
               >
-              <Button type="submit" variant="default">Save</Button>
+                <p class="text-sm font-semibold">{editError}</p>
+              </div>
+            {/if}
+            <div class="flex gap-2">
+              <Button
+                type="button"
+                onclick={closeScoreEditor}
+                variant="outline"
+                class="flex-1">Cancel</Button
+              >
+              <Button
+                type="submit"
+                variant="default"
+                disabled={!editNameValue.trim()}
+                class="flex-1">Save</Button
+              >
             </div>
           </form>
         </CardContent>
