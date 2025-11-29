@@ -12,31 +12,25 @@ A self-hosted Jeopardy game built with SvelteKit and shadcn-svelte. Host interac
 
 ### Using Docker Compose (Recommended)
 
-1. Get the `.env` file
+Get the `game.yml` file
 
-   ```bash
-   wget -O .env https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/.env.example
-   ```
+```bash
+wget -O game.yml https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/config/game.yml
+```
 
-2. Get the `game.yml` file
+Get the docker compose file
 
-   ```bash
-   wget -O game.yml https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/config/game.yml
-   ```
+```bash
+wget -O docker-compose.yml https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/docker-compose.prod.yml
+```
 
-3. Get the docker compose file
+Start the container:
 
-   ```bash
-   wget -O docker-compose.yml https://raw.githubusercontent.com/laosteven/trivia-n-chill/refs/heads/master/docker-compose.prod.yml
-   ```
+```bash
+docker compose up -d
+```
 
-4. Start the container:
-
-   ```bash
-   docker compose up -d
-   ```
-
-5. Open `http://localhost:3000` in your browser
+Open `http://localhost:3000` in your browser
 
 ### Local Development
 
