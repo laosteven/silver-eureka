@@ -1,13 +1,13 @@
-import { Server as SocketIOServer, Socket } from "socket.io";
 import type { Server as HTTPServer } from "http";
+import { Socket, Server as SocketIOServer } from "socket.io";
+import { SOCKET_EVENTS } from "../constants/socket-events";
 import type { ClientGameState } from "../types";
 import { loadGameConfig, watchGameConfig } from "./config";
-import { PlayerService } from "./services/player.service";
-import { GameStateService } from "./services/game-state.service";
-import { PlayerHandler } from "./handlers/player.handler";
-import { HostHandler } from "./handlers/host.handler";
 import { GameHandler } from "./handlers/game.handler";
-import { SOCKET_EVENTS } from "../constants/socket-events";
+import { HostHandler } from "./handlers/host.handler";
+import { PlayerHandler } from "./handlers/player.handler";
+import { GameStateService } from "./services/game-state.service";
+import { PlayerService } from "./services/player.service";
 
 let io: SocketIOServer | null = null;
 let gameConfig = loadGameConfig();
@@ -137,6 +137,15 @@ export function initSocketServer(server: HTTPServer) {
     // Player buzzes
     socket.on(SOCKET_EVENTS.BUZZ, () => {
       playerHandler.handleBuzz(socket);
+      // Emit a discrete buzzer sound event so clients can play audio
+      try {
+        const p = playerService.getPlayer(socket.id);
+        if (p) {
+          io?.emit(SOCKET_EVENTS.BUZZER_SOUND, { playerName: p.name });
+        }
+      } catch (e) {
+        console.warn("[socket] Failed to emit buzzer sound", e);
+      }
       broadcastGameState();
     });
 

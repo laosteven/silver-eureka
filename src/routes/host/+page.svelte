@@ -6,6 +6,7 @@
   import PlayerManagement from "$lib/components/features/host/PlayerManagement.svelte";
   import Leaderboard from "$lib/components/features/leaderboard/Leaderboard.svelte";
   import { Button } from "$lib/components/ui/button";
+  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card";
   import {
     DropdownMenu,
@@ -25,7 +26,7 @@
     hostJoin,
     initSocket,
   } from "$lib/stores/socket";
-  import MoreHorizontal from "@lucide/svelte/icons/more-horizontal";
+  import { Check, LockKeyhole, LockKeyholeOpen, MoreHorizontal, Trash2, X } from "@lucide/svelte";
   import { onMount } from "svelte";
 
   const game = useGame();
@@ -288,16 +289,45 @@
           getYoutubeEmbedUrl={media.getYoutubeEmbedUrl}
           buzzerLocked={$gameState.buzzerLocked}
           onCancel={() => game.cancelQuestion()}
-          onLock={() => game.lockBuzzer()}
-          onUnlock={() => game.unlockBuzzer()}
-          onClear={() => game.clearBuzzers()}
           onSkip={() => game.skipQuestion()}
         />
 
         <Card class="mt-6">
           <CardHeader>
-            <CardTitle class="text-center text-2xl font-bold">
-              Buzz order ({$gameState.buzzerLocked ? "LOCKED" : "OPEN"})
+            <CardTitle class="flex justify-between items-center">
+              <p class="text-xl">Buzzer queue</p>
+              <ButtonGroup class="ml-auto">
+                <ButtonGroup>
+                  <Button
+                    onclick={() => game.unlockBuzzer()}
+                    variant="outline"
+                    size="sm"
+                    disabled={!$gameState.buzzerLocked}
+                    title="Unlock buzzers"
+                  >
+                    <LockKeyholeOpen /> Unlock
+                  </Button>
+                  <Button
+                    class="text-red-600"
+                    onclick={() => game.lockBuzzer()}
+                    variant="outline"
+                    size="sm"
+                    disabled={$gameState.buzzerLocked}
+                    title="Lock buzzers"
+                  >
+                    <LockKeyhole /> Lock
+                  </Button>
+                </ButtonGroup>
+                <ButtonGroup>
+                  <Button
+                    onclick={() => game.clearBuzzers()}
+                    size="sm"
+                    variant="outline"
+                    title="Clear queue"
+                    ><Trash2 /> Clear
+                  </Button>
+                </ButtonGroup>
+              </ButtonGroup>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -317,26 +347,35 @@
                         <span class="font-semibold">{buzz.playerName}</span>
                       </div>
                       <div class="flex gap-2 items-center">
-                        {#if index === 0}
-                          <Button
-                            onclick={() => game.markCorrect(buzz.playerId)}
-                            variant="default"
-                            size="sm"
-                            class="bg-green-600 hover:bg-green-700 text-white border-green-700"
-                            >Correct</Button
-                          >
-                          <Button
-                            onclick={() => game.markIncorrect(buzz.playerId)}
-                            variant="destructive"
-                            size="sm">Incorrect</Button
-                          >
-                        {/if}
-                        <Button
-                          onclick={() => game.removeBuzz(buzz.playerId)}
-                          variant="outline"
-                          size="sm"
-                          class="text-xs">Remove</Button
-                        >
+                        <ButtonGroup>
+                          {#if index === 0}
+                            <ButtonGroup>
+                              <Button
+                                onclick={() => game.markIncorrect(buzz.playerId)}
+                                variant="destructive"
+                                size="icon"
+                              >
+                                <X />
+                              </Button>
+                              <Button
+                                onclick={() => game.markCorrect(buzz.playerId)}
+                                variant="default"
+                                size="icon"
+                                class="bg-green-600 hover:bg-green-700 text-white border-green-700"
+                              >
+                                <Check />
+                              </Button>
+                            </ButtonGroup>
+                          {/if}
+                          <ButtonGroup>
+                            <Button
+                              onclick={() => game.removeBuzz(buzz.playerId)}
+                              variant="outline"
+                              size="icon"
+                              class="text-xs"><Trash2 /></Button
+                            >
+                          </ButtonGroup>
+                        </ButtonGroup>
                       </div>
                     </div>
                   {/each}

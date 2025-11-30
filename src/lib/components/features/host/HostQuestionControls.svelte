@@ -1,22 +1,43 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button";
+  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
+  import { ArrowLeft, Eye, SkipForward } from "@lucide/svelte";
+
   const p = $props<{
-    buzzerLocked: boolean;
+    showAnswer: boolean;
+    reveal: () => void;
     onCancel: () => void;
-    onLock: () => void;
-    onUnlock: () => void;
-    onClear: () => void;
     onSkip: () => void;
   }>();
 </script>
 
 <div class="flex justify-center gap-4 flex-wrap">
-  <Button onclick={p.onCancel} variant="ghost">Cancel question</Button>
-  {#if !p.buzzerLocked}
-    <Button onclick={p.onLock} variant="outline">Lock buzzers</Button>
-  {:else}
-    <Button onclick={p.onUnlock} variant="outline">Unlock buzzers</Button>
-  {/if}
-  <Button onclick={p.onClear} variant="outline">Clear queue</Button>
-  <Button onclick={p.onSkip} variant="destructive">Skip question</Button>
+  <ButtonGroup>
+    <ButtonGroup>
+      <Button
+        onclick={p.onCancel}
+        variant="outline"
+        size="icon"
+        title="Go back to question selection"
+      >
+        <ArrowLeft />
+      </Button>
+    </ButtonGroup>
+
+    <ButtonGroup>
+      <Button onclick={p.onSkip} variant="outline" class="text-red-600" title="Skip question">
+        <SkipForward />Skip
+      </Button>
+      <Button
+        onclick={p.reveal}
+        disabled={p.showAnswer}
+        variant="outline"
+        class="text-green-600"
+        title="Reveal answer"
+      >
+        <Eye />
+        Answer
+      </Button>
+    </ButtonGroup>
+  </ButtonGroup>
 </div>

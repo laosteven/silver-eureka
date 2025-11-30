@@ -1,6 +1,5 @@
 <script lang="ts">
   import HostQuestionControls from "$lib/components/features/host/HostQuestionControls.svelte";
-  import Button from "$lib/components/ui/button/button.svelte";
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card";
   const p = $props<{
     question: {
@@ -18,9 +17,6 @@
     getYoutubeEmbedUrl: (id: string) => string;
     buzzerLocked: boolean;
     onCancel: () => void;
-    onLock: () => void;
-    onUnlock: () => void;
-    onClear: () => void;
     onSkip: () => void;
   }>();
 </script>
@@ -70,22 +66,13 @@
         <p class="text-sm text-muted-foreground mb-1">Answer:</p>
         <p class="text-xl font-semibold text-green-800">{p.question?.answer}</p>
       </div>
-    {:else}
-      <div class="text-center">
-        <Button
-          onclick={p.reveal}
-          class="bg-green-600 hover:bg-green-700 text-white border-green-700">Reveal answer</Button
-        >
-      </div>
     {/if}
 
     <div class="mt-6">
       <HostQuestionControls
-        buzzerLocked={p.buzzerLocked}
+        showAnswer={p.showAnswer}
+        reveal={p.reveal}
         onCancel={p.onCancel}
-        onLock={p.onLock}
-        onUnlock={p.onUnlock}
-        onClear={p.onClear}
         onSkip={p.onSkip}
       />
     </div>

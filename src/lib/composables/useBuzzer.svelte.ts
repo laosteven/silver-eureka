@@ -17,17 +17,49 @@ export function useBuzzer() {
 
     try {
       const audioContext = new (window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-      const buffer = audioContext.createBuffer(
-        1,
-        audioContext.sampleRate * 0.2,
-        audioContext.sampleRate
-      );
+      // Attempt to unlock audio on first interaction if suspended
+      const unlock = () => {
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {});
+        }
+        document.removeEventListener("pointerdown", unlock);
+        document.removeEventListener("keydown", unlock);
+      };
+      document.addEventListener("pointerdown", unlock);
+      document.addEventListener("keydown", unlock);
+      // Friendly notification-style chime
+      const durationSec = 0.35;
+      const fundamentalStart = 740; // approx F#5
+      const fundamentalEnd = 784;   // approx G5 (small glide up)
+      const fifthRatio = 1.5;       // perfect fifth
+      const sampleCount = Math.floor(audioContext.sampleRate * durationSec);
+      const buffer = audioContext.createBuffer(1, sampleCount, audioContext.sampleRate);
       const data = buffer.getChannelData(0);
 
-      // Generate a beep sound (440 Hz for 0.2 seconds)
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < sampleCount; i++) {
         const t = i / audioContext.sampleRate;
-        data[i] = Math.sin(2 * Math.PI * 440 * t) * Math.exp(-t * 5);
+        // Glide fundamental frequency linearly
+        const f = fundamentalStart + (fundamentalEnd - fundamentalStart) * (t / durationSec);
+        const phaseFund = 2 * Math.PI * f * t;
+        const phaseFifth = 2 * Math.PI * (f * fifthRatio) * t;
+        const sineFund = Math.sin(phaseFund);
+        const sineFifth = 0.55 * Math.sin(phaseFifth);
+        const tri = (2 / Math.PI) * Math.asin(Math.sin(phaseFund)) * 0.3;
+
+        // Envelope: slow attack (12ms), gentle decay with eased tail
+        const attack = 0.012;
+        let envelope: number;
+        if (t < attack) {
+          envelope = t / attack; // linear attack
+        } else {
+          const decayT = (t - attack) / (durationSec - attack);
+          // Use (1 - decayT)^3 for a smooth cubic decay
+          envelope = Math.pow(1 - decayT, 3);
+        }
+
+        // Slight overall amplitude shaping to avoid clipping
+        const sample = (sineFund + sineFifth + tri) * 0.7 * envelope;
+        data[i] = sample;
       }
 
       buzzerAudio = {
@@ -64,11 +96,12 @@ export function useBuzzer() {
     if (!browser) return;
 
     $effect(() => {
-      let signal: null | { playerName: string } = null;
-      buzzerSound.subscribe((v) => (signal = v))();
-      if (signal) {
-        play();
-      }
+      const unsubscribe = buzzerSound.subscribe((v) => {
+        if (v) {
+          play();
+        }
+      });
+      return () => unsubscribe();
     });
   }
 
