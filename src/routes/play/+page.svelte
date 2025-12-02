@@ -1,34 +1,30 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { browser } from "$app/environment";
+  import BuzzerButton from "$lib/components/features/game/BuzzerButton.svelte";
+  import PlayerStats from "$lib/components/features/player/PlayerStats.svelte";
+  import RenameModal from "$lib/components/features/player/RenameModal.svelte";
   import { Button } from "$lib/components/ui/button";
-  import { Toaster, toast } from "svelte-sonner";
   import {
     Card,
     CardContent,
+    CardDescription,
     CardHeader,
     CardTitle,
-    CardDescription,
   } from "$lib/components/ui/card";
   import { Input } from "$lib/components/ui/input";
-  import {
-    initSocket,
-    gameState,
-    gameConfig,
-    connected,
-    joinError,
-    hostNotification,
-  } from "$lib/stores/socket";
   import { usePlayer } from "$lib/composables/usePlayer.svelte";
-  import RenameModal from "$lib/components/features/player/RenameModal.svelte";
-  import PlayerStats from "$lib/components/features/player/PlayerStats.svelte";
-  import BuzzerButton from "$lib/components/features/game/BuzzerButton.svelte";
+  import {
+    connected,
+    gameConfig,
+    gameState,
+    hostNotification,
+    initSocket,
+    joinError,
+  } from "$lib/stores/socket";
+  import { onMount } from "svelte";
+  import { Toaster, toast } from "svelte-sonner";
 
   const player = usePlayer();
-
-  let showRenameModal = $state(false);
-  let newUsername = $state("");
-  let renameError = $state<string | null>(null);
 
   onMount(() => {
     if (browser) {
@@ -42,32 +38,6 @@
       await player.join(player.username);
       // Error handling is done in the composable
     }
-  }
-
-  async function handleRename(name?: string) {
-    const target = (name ?? newUsername).trim();
-    if (target) {
-      renameError = null;
-      const result = await player.rename(target);
-      if (result.success) {
-        showRenameModal = false;
-        newUsername = "";
-      } else {
-        renameError = result.error || "Failed to rename";
-      }
-    }
-  }
-
-  function openRenameModal() {
-    newUsername = player.username;
-    renameError = null;
-    showRenameModal = true;
-  }
-
-  function closeRenameModal() {
-    showRenameModal = false;
-    newUsername = "";
-    renameError = null;
   }
 
   function handleBuzz() {
@@ -150,7 +120,9 @@
         <p class="text-muted-foreground">
           {$gameState.players.length} player(s) joined
         </p>
-        <Button onclick={openRenameModal} variant="outline" class="mt-4">Change name</Button>
+        <RenameModal
+          value={player.currentPlayer?.name || ""}
+        />
       </CardContent>
     </Card>
   {:else if $gameState.gamePhase === "playing"}
@@ -167,7 +139,10 @@
           totalPlayers={$gameState.players.length}
         />
         <p class="text-muted-foreground">Waiting for host to select a question...</p>
-        <Button onclick={openRenameModal} variant="outline" size="sm">Change name</Button>
+        
+        <RenameModal
+          value={player.currentPlayer?.name || ""}
+        />
       </CardContent>
     </Card>
   {:else if $gameState.gamePhase === "question"}
@@ -228,17 +203,6 @@
         </div>
       </CardContent>
     </Card>
-  {/if}
-
-  <!-- Rename Modal -->
-  {#if showRenameModal}
-    <RenameModal
-      open={showRenameModal}
-      value={newUsername}
-      error={renameError}
-      onClose={closeRenameModal}
-      onSubmit={(name) => handleRename(name)}
-    />
   {/if}
 </div>
 
