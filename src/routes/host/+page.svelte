@@ -6,7 +6,6 @@
   import PlayerManagement from "$lib/components/features/host/PlayerManagement.svelte";
   import Leaderboard from "$lib/components/features/leaderboard/Leaderboard.svelte";
   import { Button } from "$lib/components/ui/button";
-  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card";
   import {
     DropdownMenu,
@@ -14,6 +13,8 @@
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "$lib/components/ui/dropdown-menu";
+  import { Label } from "$lib/components/ui/label";
+  import Switch from "$lib/components/ui/switch/switch.svelte";
   import { useBuzzer } from "$lib/composables/useBuzzer.svelte";
   import { useGame } from "$lib/composables/useGame.svelte";
   import { useMedia } from "$lib/composables/useMedia.svelte";
@@ -28,7 +29,6 @@
   } from "$lib/stores/socket";
   import Check from "@lucide/svelte/icons/check";
   import LockKeyhole from "@lucide/svelte/icons/lock-keyhole";
-  import LockKeyholeOpen from "@lucide/svelte/icons/lock-keyhole-open";
   import MoreHorizontal from "@lucide/svelte/icons/more-horizontal";
   import Trash2 from "@lucide/svelte/icons/trash-2";
   import X from "@lucide/svelte/icons/x";
@@ -300,39 +300,33 @@
         <Card class="mt-6">
           <CardHeader>
             <CardTitle class="flex justify-between items-center">
-              <p class="text-xl">Buzzer queue</p>
-              <ButtonGroup class="ml-auto">
-                <ButtonGroup>
-                  <Button
-                    onclick={() => game.unlockBuzzer()}
-                    variant="outline"
-                    size="sm"
-                    disabled={!$gameState.buzzerLocked}
-                    title="Unlock buzzers"
-                  >
-                    <LockKeyholeOpen /> Unlock
-                  </Button>
-                  <Button
-                    class="text-red-600"
-                    onclick={() => game.lockBuzzer()}
-                    variant="outline"
-                    size="sm"
-                    disabled={$gameState.buzzerLocked}
-                    title="Lock buzzers"
-                  >
-                    <LockKeyhole /> Lock
-                  </Button>
-                </ButtonGroup>
-                <ButtonGroup>
-                  <Button
-                    onclick={() => game.clearBuzzers()}
-                    size="sm"
-                    variant="outline"
-                    title="Clear queue"
-                    ><Trash2 /> Clear
-                  </Button>
-                </ButtonGroup>
-              </ButtonGroup>
+              <p class="text-xl mr-auto">Buzzer queue</p>
+              <div
+                class="flex items-center mr-2 border-input bg-background border shadow-sm h-8 rounded-md px-3 text-xs"
+              >
+                <Switch
+                  id="buzzer-lock-switch"
+                  checked={$gameState.buzzerLocked}
+                  title="Toggle buzzer lock"
+                  onCheckedChange={(checkedEvent) => {
+                    if (checkedEvent) {
+                      game.lockBuzzer();
+                    } else {
+                      game.unlockBuzzer();
+                    }
+                  }}
+                />
+                <Label for="buzzer-lock-switch" class="select-none ml-2">
+                  <LockKeyhole size={16} />
+                </Label>
+              </div>
+              <Button
+                onclick={() => game.clearBuzzers()}
+                size="sm"
+                variant="outline"
+                title="Clear queue"
+                ><Trash2 /> Clear
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -352,35 +346,28 @@
                         <span class="font-semibold">{buzz.playerName}</span>
                       </div>
                       <div class="flex gap-2 items-center">
-                        <ButtonGroup>
-                          {#if index === 0}
-                            <ButtonGroup>
-                              <Button
-                                onclick={() => game.markIncorrect(buzz.playerId)}
-                                variant="destructive"
-                                size="icon"
-                              >
-                                <X />
-                              </Button>
-                              <Button
-                                onclick={() => game.markCorrect(buzz.playerId)}
-                                variant="default"
-                                size="icon"
-                                class="bg-green-600 hover:bg-green-700 text-white border-green-700"
-                              >
-                                <Check />
-                              </Button>
-                            </ButtonGroup>
-                          {/if}
-                          <ButtonGroup>
-                            <Button
-                              onclick={() => game.removeBuzz(buzz.playerId)}
-                              variant="outline"
-                              size="icon"
-                              class="text-xs"><Trash2 /></Button
-                            >
-                          </ButtonGroup>
-                        </ButtonGroup>
+                        {#if index === 0}
+                          <Button
+                            onclick={() => game.markIncorrect(buzz.playerId)}
+                            variant="destructive"
+                          >
+                            <X /> Wrong
+                          </Button>
+                          <Button
+                            onclick={() => game.markCorrect(buzz.playerId)}
+                            variant="default"
+                            class="bg-green-600 hover:bg-green-700 text-white border-green-700"
+                          >
+                            <Check /> Correct
+                          </Button>
+                        {/if}
+                        <Button
+                          onclick={() => game.removeBuzz(buzz.playerId)}
+                          variant="outline"
+                          class="text-xs"
+                        >
+                          <Trash2 />
+                        </Button>
                       </div>
                     </div>
                   {/each}

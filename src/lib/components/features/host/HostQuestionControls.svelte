@@ -1,9 +1,8 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button";
-  import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import ArrowLeft from "@lucide/svelte/icons/arrow-left";
   import Eye from "@lucide/svelte/icons/eye";
-  import SkipForward from "@lucide/svelte/icons/skip-forward";
+  import HeartCrack from "@lucide/svelte/icons/heart-crack";
 
   const p = $props<{
     showAnswer: boolean;
@@ -14,32 +13,22 @@
 </script>
 
 <div class="flex justify-center gap-4 flex-wrap">
-  <ButtonGroup>
-    <ButtonGroup>
-      <Button
-        onclick={p.onCancel}
-        variant="outline"
-        size="icon"
-        title="Go back to question selection"
-      >
-        <ArrowLeft />
-      </Button>
-    </ButtonGroup>
+  <Button onclick={p.onCancel} variant="outline" title="Go back to question selection">
+    <ArrowLeft /> Back
+  </Button>
 
-    <ButtonGroup>
-      <Button onclick={p.onSkip} variant="outline" title="Skip question">
-        <SkipForward />Skip question
-      </Button>
-      <Button
-        class="text-green-600"
-        onclick={p.reveal}
-        disabled={p.showAnswer}
-        variant="outline"
-        title="Reveal answer"
-      >
-        <Eye />
-        Reveal answer
-      </Button>
-    </ButtonGroup>
-  </ButtonGroup>
+  <Button
+    class="text-green-600"
+    onclick={p.reveal}
+    disabled={p.showAnswer}
+    variant="outline"
+    title="Reveal answer"
+  >
+    <Eye />
+    Reveal answer
+  </Button>
+
+  <Button onclick={p.onSkip} variant="outline" title="Skip question">
+    <HeartCrack />Skip
+  </Button>
 </div>
