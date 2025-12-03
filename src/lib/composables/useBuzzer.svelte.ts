@@ -21,7 +21,7 @@ export function useBuzzer() {
       cooldownMs = options.cooldownMs;
     }
 
-    const buzzerUrl = "https://cdn.freesound.org/previews/686/686265_14947522-lq.mp3";
+    const buzzerUrl = "/sounds/buzzer.mp3";
     buzzerAudio = {
       play: async () => {
         try {

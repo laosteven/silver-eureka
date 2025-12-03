@@ -142,7 +142,7 @@ export function initSocket() {
   // Play correct/incorrect sounds when server notifies
   socket.on("correctAnswer", () => {
     try {
-      const url = "https://cdn.freesound.org/previews/395/395806_4877562-lq.mp3";
+      const url = "/sounds/correct.mp3";
       const a = new Audio(url);
       a.preload = "auto";
       a.play().catch(() => {});
@@ -153,7 +153,7 @@ export function initSocket() {
 
   socket.on("incorrectAnswer", () => {
     try {
-      const url = "https://cdn.freesound.org/previews/750/750933_16155788-lq.mp3";
+      const url = "/sounds/incorrect.mp3";
       const a = new Audio(url);
       a.preload = "auto";
       a.play().catch(() => {});

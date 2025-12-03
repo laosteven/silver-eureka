@@ -173,11 +173,3 @@ categories:
 ### Leaderboard
 
 ![Leaderboard](https://imgur.com/Zlf8Kd3.png)
-
-## Credits
-
-Sound effects used in this project:
-
-- Buzzer: https://freesound.org/people/rgjpb/sounds/686265/
-- Correct answer: https://freesound.org/people/magedu/sounds/395806/
-- Wrong answer: https://freesound.org/people/EtherAudio/sounds/750933/
