@@ -173,7 +173,3 @@ categories:
 ### Leaderboard
 
 ![Leaderboard](https://imgur.com/Zlf8Kd3.png)
-
-## License
-
-MIT
