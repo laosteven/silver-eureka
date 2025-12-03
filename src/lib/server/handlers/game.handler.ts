@@ -93,6 +93,8 @@ export class GameHandler {
     this.gameStateService.setBuzzerLocked(true);
     this.gameStateService.setPhase("playing");
 
+    // Notify clients about correct answer (so they can play sound/animation)
+    this.io.emit(SOCKET_EVENTS.CORRECT_ANSWER, { playerId, playerName: player.name, points });
     console.log(`Correct answer by ${player.name} (+${points})`);
   }
 
@@ -117,7 +119,9 @@ export class GameHandler {
 
     // Unlock buzzer for others to try
     this.gameStateService.setBuzzerLocked(false);
-
+    console.log(`Incorrect answer by ${player.name} (-${points})`);
+    // Notify clients about incorrect answer
+    this.io.emit(SOCKET_EVENTS.INCORRECT_ANSWER, { playerId, playerName: player.name, points });
     console.log(`Incorrect answer by ${player.name} (-${points})`);
   }
 

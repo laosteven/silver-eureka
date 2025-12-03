@@ -139,6 +139,29 @@ export function initSocket() {
     setTimeout(() => hostNotification.set(null), 5000);
   });
 
+  // Play correct/incorrect sounds when server notifies
+  socket.on("correctAnswer", () => {
+    try {
+      const url = "https://cdn.freesound.org/previews/395/395806_4877562-lq.mp3";
+      const a = new Audio(url);
+      a.preload = "auto";
+      a.play().catch(() => {});
+    } catch (e) {
+      console.debug("Play correct sound failed", e);
+    }
+  });
+
+  socket.on("incorrectAnswer", () => {
+    try {
+      const url = "https://cdn.freesound.org/previews/750/750933_16155788-lq.mp3";
+      const a = new Audio(url);
+      a.preload = "auto";
+      a.play().catch(() => {});
+    } catch (e) {
+      console.debug("Play incorrect sound failed", e);
+    }
+  });
+
   socket.on("emojiReaction", (data: { emoji: string; playerName?: string }) => {
     hostEmojiReaction.set({ playerName: data.playerName || "", emoji: data.emoji });
     // Clear after configured display duration (fallback to 4000ms)
