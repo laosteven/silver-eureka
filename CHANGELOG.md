@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/laosteven/trivia-n-chill/compare/v1.0.0...v1.1.0) (2025-12-03)
+
+
+### Features
+
+* confetti and audio ([6071403](https://github.com/laosteven/trivia-n-chill/commit/60714031e19cde85b17a2970579ced8ae9330a21))
+
 # 1.0.0 (2025-12-03)
 
 ### Bug Fixes
