@@ -2,7 +2,6 @@ name: Docker Publish
 
 on:
   push:
-    branches: [master]
     tags: ["v*.*.*"]
   workflow_dispatch:
 
@@ -37,6 +36,18 @@ jobs:
             type=ref,event=tag
             type=sha,format=short
 
+      - name: Resolve tag
+        id: resolve
+        run: |
+          # Ensure tags are available
+          git fetch --prune --unshallow --tags || git fetch --tags || true
+          # Try to find the most recent tag; fall back to short sha
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$TAG" ]; then
+            TAG=sha-$(git rev-parse --short HEAD)
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -44,7 +55,9 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/trivia-n-chill:${{ steps.resolve.outputs.tag }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/trivia-n-chill:latest
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Output image tags
