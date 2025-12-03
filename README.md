@@ -112,22 +112,22 @@ categories:
 
 ### Configuration Options
 
-| Option       | Description                                | Default            |
-| ------------ | ------------------------------------------ | ------------------ |
-| `title`      | Game title displayed on screens            | "Trivia & Chill"   |
-| `categories` | Array of category objects                  | Default categories |
+| Option       | Description                     | Default            |
+| ------------ | ------------------------------- | ------------------ |
+| `title`      | Game title displayed on screens | "Trivia & Chill"   |
+| `categories` | Array of category objects       | Default categories |
 
 ### Question Options
 
-| Option             | Description                                      | Required |
-| ------------------ | ------------------------------------------------ | -------- |
-| `value`            | Point value (100, 200, etc.)                     | Yes      |
-| `question`         | The question text                                | Yes      |
-| `answer`           | The answer text                                  | Yes      |
-| `questionImage`    | URL for an image shown during the question       | No       |
-| `answerImage`      | URL for an image shown when the answer is shown  | No       |
-| `questionYoutube`  | YouTube video id for the question (e.g., `abc123`)| No       |
-| `answerYoutube`    | YouTube video id for the answer                  | No       |
+| Option            | Description                                        | Required |
+| ----------------- | -------------------------------------------------- | -------- |
+| `value`           | Point value (100, 200, etc.)                       | Yes      |
+| `question`        | The question text                                  | Yes      |
+| `answer`          | The answer text                                    | Yes      |
+| `questionImage`   | URL for an image shown during the question         | No       |
+| `answerImage`     | URL for an image shown when the answer is shown    | No       |
+| `questionYoutube` | YouTube video id for the question (e.g., `abc123`) | No       |
+| `answerYoutube`   | YouTube video id for the answer                    | No       |
 
 ## Tech Stack
 
@@ -138,11 +138,11 @@ categories:
 
 ## Environment Variables
 
-| Variable      | Description              | Default           |
-| ------------- | ------------------------ | ----------------- |
-| `PORT`        | Server port              | 3000              |
+| Variable      | Description              | Default          |
+| ------------- | ------------------------ | ---------------- |
+| `PORT`        | Server port              | 3000             |
 | `CONFIG_PATH` | Path to game YAML config | /config/game.yml |
-| `GAME_TITLE`  | Game title               | "Trivia & Chill"  |
+| `GAME_TITLE`  | Game title               | "Trivia & Chill" |
 
 ## More screenshots
 

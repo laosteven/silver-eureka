@@ -46,7 +46,11 @@
             <track kind="captions" label="Video" default />
           </video>
         {:else}
-          <img src={p.question.questionImage} alt="Question" class="mx-auto mt-4 max-h-64 rounded-lg" />
+          <img
+            src={p.question.questionImage}
+            alt="Question"
+            class="mx-auto mt-4 max-h-64 rounded-lg"
+          />
         {/if}
       {/if}
 
@@ -80,7 +84,11 @@
               <track kind="captions" label="Video" default />
             </video>
           {:else}
-            <img src={p.question.answerImage} alt="Answer" class="mx-auto mt-4 max-h-64 rounded-lg" />
+            <img
+              src={p.question.answerImage}
+              alt="Answer"
+              class="mx-auto mt-4 max-h-64 rounded-lg"
+            />
           {/if}
         {/if}
         {#if p.question?.answerYoutube}

@@ -3,8 +3,8 @@
  * Manages the core game state and logic
  */
 
-import type { GameState, Question, BuzzEvent, GamePhase } from '../../types';
-import { PlayerService } from './player.service';
+import type { GameState, Question, BuzzEvent, GamePhase } from "../../types";
+import { PlayerService } from "./player.service";
 
 export class GameStateService {
   private state: GameState;

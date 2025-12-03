@@ -188,4 +188,3 @@ export class PlayerHandler {
     console.log(`Player reacted with emoji: ${emoji}`);
   }
 }
-

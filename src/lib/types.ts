@@ -1,6 +1,13 @@
 export interface GameConfig {
   title: string;
   categories: Category[];
+  emoji?: {
+    cost?: number;
+    allowNegative?: boolean;
+    maxActive?: number;
+    cooldownMs?: number;
+    displayDurationMs?: number; 
+  };
 }
 
 export interface Category {
@@ -62,6 +69,13 @@ export interface GameConfigClient {
     name: string;
     questions: { value: number }[];
   }[];
+  emoji?: {
+    cost?: number;
+    allowNegative?: boolean;
+    maxActive?: number;
+    cooldownMs?: number;
+    displayDurationMs?: number;
+  };
 }
 
 export interface FullQuestion {

@@ -56,6 +56,7 @@ function broadcastConfig() {
         name: cat.name,
         questions: cat.questions.map((q) => ({ value: q.value })),
       })),
+      emoji: gameConfig.emoji || null,
     });
   }
 }

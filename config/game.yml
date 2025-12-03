@@ -97,3 +97,10 @@ categories:
       - value: 500
         question: "This American football event is the championship game of the NFL"
         answer: "What is the Super Bowl?"
+
+emoji:
+  cost: 10
+  allowNegative: false
+  maxActive: 5
+  cooldownMs: 0
+  displayDurationMs: 4000

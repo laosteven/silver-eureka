@@ -1,7 +1,7 @@
-import type { GameConfig } from "$lib/types";
 import { existsSync, readFileSync, watch } from "fs";
 import path from "path";
 import { parse } from "yaml";
+import type { GameConfig } from "../types";
 
 // Helper to get env var without quotes
 function getEnvTitle(): string {
@@ -16,6 +16,13 @@ function getEnvTitle(): string {
 const FALLBACK: GameConfig = {
   title: getEnvTitle(),
   categories: [],
+  emoji: {
+    cost: 10,
+    allowNegative: false,
+    maxActive: 10,
+    cooldownMs: 5000,
+    displayDurationMs: 4000,
+  },
 };
 
 function resolvePath(): string {
@@ -31,11 +38,18 @@ export function loadGameConfig(): GameConfig {
   if (existsSync(configPath)) {
     try {
       const raw = readFileSync(configPath, "utf-8");
-      const parsed = parse(raw) as Partial<GameConfig>;
+      const parsed = parse(raw) as any;
       return {
         title: getEnvTitle(),
-        categories: parsed.categories || FALLBACK.categories,
-      };
+        categories: (parsed.categories as any) || FALLBACK.categories,
+        emoji: {
+          cost: parsed.emoji?.cost ?? FALLBACK.emoji?.cost,
+          allowNegative: parsed.emoji?.allowNegative ?? FALLBACK.emoji?.allowNegative,
+          maxActive: parsed.emoji?.maxActive ?? FALLBACK.emoji?.maxActive,
+          cooldownMs: parsed.emoji?.cooldownMs ?? FALLBACK.emoji?.cooldownMs,
+          displayDurationMs: parsed.emoji?.displayDurationMs ?? FALLBACK.emoji?.displayDurationMs,
+        },
+      } as GameConfig;
     } catch (err) {
       console.error("Failed to parse game config YAML. Using fallback.", err);
       return FALLBACK;

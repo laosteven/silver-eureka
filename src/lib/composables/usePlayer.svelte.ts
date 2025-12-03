@@ -159,9 +159,7 @@ export function usePlayer() {
    */
   const buzzPosition = $derived.by(() => {
     if (!currentGameState.buzzerOrder) return 0;
-    const index = currentGameState.buzzerOrder.findIndex(
-      (b) => b.playerId === currentPlayerId
-    );
+    const index = currentGameState.buzzerOrder.findIndex((b) => b.playerId === currentPlayerId);
     return index + 1;
   });
 

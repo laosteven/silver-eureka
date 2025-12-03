@@ -30,8 +30,16 @@ export async function celebrateCorrect(duration = 1000) {
     }
 
     const particleCount = Math.floor(50 * (timeLeft / duration));
-    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+    });
+    confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+    });
   }, 250);
 }
 
@@ -51,16 +59,16 @@ export async function celebrateLeaderboard(duration = 15000) {
 }
 
 export async function playerEmojiReact(emoji: string) {
-    const confetti = await load();
-    const emojiShape = confetti.shapeFromText({ text: emoji });
-    if (!confetti) return;
-    confetti({
-        particleCount: 30,
-        spread: 100,
-        shapes: [emojiShape],
-        origin: { x: Math.random(), y: 1 },
-        scalar: Math.random() * 2 + 0.4,
-    });
+  const confetti = await load();
+  const emojiShape = confetti.shapeFromText({ text: emoji });
+  if (!confetti) return;
+  confetti({
+    particleCount: 30,
+    spread: 100,
+    shapes: [emojiShape],
+    origin: { x: Math.random(), y: 1 },
+    scalar: (Math.random() * 3) + 1,
+  });
 }
 
 export default { celebrateCorrect, celebrateLeaderboard, playerEmojiReact };

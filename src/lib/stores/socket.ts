@@ -127,8 +127,9 @@ export function initSocket() {
 
   socket.on("emojiReaction", (data: { emoji: string; playerName?: string }) => {
     hostEmojiReaction.set({ playerName: data.playerName || "", emoji: data.emoji });
-    // Clear after a few seconds
-    setTimeout(() => hostEmojiReaction.set(null), 4000);
+    // Clear after configured display duration (fallback to 4000ms)
+    const duration = get(gameConfig)?.emoji?.displayDurationMs ?? 4000;
+    setTimeout(() => hostEmojiReaction.set(null), duration);
     // Trigger emoji confetti on host clients as well
     import("$lib/utils/confetti").then((m) => m.playerEmojiReact(data.emoji)).catch(() => {});
   });

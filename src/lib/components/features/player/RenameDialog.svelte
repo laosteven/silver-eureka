@@ -6,7 +6,6 @@
   import { usePlayer } from "$lib/composables/usePlayer.svelte";
   import { validateUsername } from "$lib/utils/validation";
 
-
   let {
     value = $bindable(""),
   }: {
@@ -52,7 +51,7 @@
   }
 </script>
 
-<Dialog.Root bind:open={open}>
+<Dialog.Root bind:open>
   <Dialog.Trigger
     class={buttonVariants({ variant: "outline" })}
     onclick={() => {
@@ -92,7 +91,7 @@
         disabled={!newUsername.trim() || !!renameError}
         onclick={handleRename}
       >
-        {renameError ? 'Fix errors' : 'Change name'}
+        {renameError ? "Fix errors" : "Change name"}
       </Button>
     </div>
   </Dialog.Content>

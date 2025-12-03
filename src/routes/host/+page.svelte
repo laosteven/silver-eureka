@@ -147,7 +147,9 @@
 
   $effect(() => {
     if ($hostEmojiReaction) {
-      toast.info(`${$hostEmojiReaction.playerName} sent ${$hostEmojiReaction.emoji}`, { dismissable: true });
+      toast.info(`${$hostEmojiReaction.playerName} sent ${$hostEmojiReaction.emoji}`, {
+        dismissable: true,
+      });
     }
   });
 </script>

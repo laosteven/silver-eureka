@@ -16,6 +16,10 @@ interface OperationResult {
 }
 
 export class HostHandler {
+  // Track active emoji reactions count and per-player cooldowns
+  private activeEmojiCount = 0;
+  private playerLastReaction = new Map<string, number>();
+
   constructor(
     private io: SocketIOServer,
     private playerService: PlayerService,
@@ -221,14 +225,80 @@ export class HostHandler {
 
   handleEmojiReaction(socket: Socket, emoji: string): void {
     const player = this.playerService.getPlayer(socket.id);
-    const playerName = player ? player.name : "Unknown";
-    console.log(`Player ${playerName} reacted with emoji: ${emoji}`);
+    if (!player) {
+      console.log(`Emoji reaction failed: player ${socket.id} not found`);
+      return;
+    }
 
-    // Broadcast emoji reaction to host clients so the host UI can display it
+    const cfg = this.getGameConfig().emoji || {};
+    const cost = cfg.cost ?? 10;
+    const allowNegative = cfg.allowNegative ?? false;
+    const maxActive = cfg.maxActive ?? 10;
+    const cooldownMs = cfg.cooldownMs ?? 5000;
+    const displayDurationMs = cfg.displayDurationMs ?? 4000;
+
+    const now = Date.now();
+
+    // Check active limit
+    if (this.activeEmojiCount >= maxActive) {
+      this.io.to(player.id).emit(SOCKET_EVENTS.HOST_NOTIFICATION, {
+        message: `Too many reactions. Try again later.`,
+      });
+      return;
+    }
+
+    // Check cooldown
+    const last = this.playerLastReaction.get(player.id) || 0;
+    if (now - last < cooldownMs) {
+      this.io.to(player.id).emit(SOCKET_EVENTS.HOST_NOTIFICATION, {
+        message: `Please wait ${Math.ceil((cooldownMs - (now - last)) / 1000)}s before reacting again.`,
+      });
+      return;
+    }
+
+    // Deduct cost from player score
+    const newScore = player.score - cost;
+    if (!allowNegative && newScore < 0) {
+      this.io.to(player.id).emit(SOCKET_EVENTS.HOST_NOTIFICATION, {
+        message: `Not enough points to react (cost: ${cost}$).`,
+      });
+      return;
+    }
+
+    // Apply score change
+    this.playerService.updatePlayerScore(player.id, newScore);
+
+    // Broadcast game state update so clients see new score (transform to client shape)
+    const state = this.gameStateService.getState();
+    const clientState = {
+      players: Array.from(state.players.values()),
+      currentQuestion: state.currentQuestion,
+      currentCategory: state.currentCategory,
+      answeredQuestions: Array.from(state.answeredQuestions),
+      buzzerOrder: state.buzzerOrder,
+      buzzerLocked: state.buzzerLocked,
+      gamePhase: state.gamePhase,
+      showAnswer: state.showAnswer,
+    };
+    this.io.emit(SOCKET_EVENTS.GAME_STATE, clientState);
+
+    // Accept reaction: broadcast to host and update counters
+    const playerName = player.name;
     this.io.to("host").emit(SOCKET_EVENTS.EMOJI_REACTION, {
       playerName,
       emoji,
     });
+
+    this.activeEmojiCount += 1;
+    // Broadcast status to all clients so UI can disable when limit reached
+    this.io.emit(SOCKET_EVENTS.EMOJI_STATUS, { active: this.activeEmojiCount, max: maxActive });
+    this.playerLastReaction.set(player.id, now);
+
+    // After displayDurationMs, decrement active count
+    setTimeout(() => {
+      this.activeEmojiCount = Math.max(0, this.activeEmojiCount - 1);
+      this.io.emit(SOCKET_EVENTS.EMOJI_STATUS, { active: this.activeEmojiCount, max: maxActive });
+    }, displayDurationMs);
   }
 
   /**

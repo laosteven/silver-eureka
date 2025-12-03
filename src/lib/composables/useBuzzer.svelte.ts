@@ -19,7 +19,10 @@ export function useBuzzer() {
     if (!browser) return;
 
     try {
-      const audioContext = new (window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      const audioContext = new (
+        window.AudioContext ||
+        (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      )();
       audioContextRef = audioContext;
       if (options?.cooldownMs != null && options.cooldownMs >= 0) {
         cooldownMs = options.cooldownMs;
@@ -72,7 +75,7 @@ export function useBuzzer() {
           // Output envelope
           outGain.gain.setValueAtTime(0.0001, now);
           outGain.gain.exponentialRampToValueAtTime(0.6, now + 0.015);
-          outGain.gain.exponentialRampToValueAtTime(0.22, now + 0.20);
+          outGain.gain.exponentialRampToValueAtTime(0.22, now + 0.2);
           outGain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
 
           // Filter
