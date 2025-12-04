@@ -13,9 +13,32 @@
 
   let open = $state(false);
   let pickerLoaded = $state(false);
+  let recent = $state<string[]>(["😀", "😂", "😍"]);
+
+  function recordRecent(sel: string) {
+    recent = [sel, ...recent.filter((r) => r !== sel)].slice(0, 3);
+    try {
+      if (browser && window?.localStorage) {
+        window.localStorage.setItem("trivia:recentEmojis", JSON.stringify(recent));
+      }
+    } catch (e) {
+      // ignore storage errors
+    }
+  }
 
   onMount(async () => {
     if (!browser) return;
+    try {
+      const raw = window.localStorage.getItem("trivia:recentEmojis");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          recent = parsed.slice(0, 3);
+        }
+      }
+    } catch (e) {
+      // ignore parse errors
+    }
     try {
       await import("emoji-picker-element");
       pickerLoaded = true;
@@ -28,16 +51,6 @@
 
 <div class="flex items-center gap-2">
   <ButtonGroup>
-    <Button
-      variant="outline"
-      size="icon"
-      onclick={() => {
-        open = !open;
-        player.sendEmojiReaction(emoji);
-      }}
-    >
-      {emoji}
-    </Button>
     <Popover.Root>
       <Popover.Trigger
         class={buttonVariants({ variant: "outline", size: "icon" })}
@@ -50,7 +63,9 @@
           <emoji-picker
             align="end"
             onemoji-click={(e: any) => {
-              emoji = e.detail?.unicode || e.detail;
+              const sel = e.detail?.unicode || e.detail;
+              emoji = sel;
+              recordRecent(sel);
               open = false;
             }}
           ></emoji-picker>
@@ -59,5 +74,17 @@
         {/if}
       </Popover.Content>
     </Popover.Root>
+    {#if recent.length}
+      {#each recent as r}
+        <Button
+          variant="outline"
+          size="icon"
+          onclick={() => player.sendEmojiReaction(r)}
+          aria-label={`Send ${r}`}
+        >
+          {r}
+        </Button>
+      {/each}
+    {/if}
   </ButtonGroup>
 </div>

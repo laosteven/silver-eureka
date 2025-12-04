@@ -204,6 +204,10 @@
             #{rank} of {$gameState.players.length}
           </p>
         </div>
+        
+        <div class="mt-4 flex items-center justify-center gap-4">
+          <EmojiPickerReaction />
+        </div>
       </CardContent>
     </Card>
   {/if}

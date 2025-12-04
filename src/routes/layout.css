@@ -54,6 +54,17 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Prevent double-tap zoom / delayed taps on mobile for interactive controls */
+  button,
+  [role="button"],
+  .btn,
+  .icon-button,
+  .no-double-tap {
+    touch-action: manipulation;
+    -ms-touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @theme {
