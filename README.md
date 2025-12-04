@@ -32,7 +32,7 @@ docker compose up -d
 
 Open `http://localhost:3000` in your browser
 
-### Local Development
+## Local Development
 
 1. Install dependencies:
 

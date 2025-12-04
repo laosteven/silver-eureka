@@ -6,7 +6,7 @@ export interface GameConfig {
     allowNegative?: boolean;
     maxActive?: number;
     cooldownMs?: number;
-    displayDurationMs?: number; 
+    displayDurationMs?: number;
   };
   typewriter?: {
     enabled?: boolean;

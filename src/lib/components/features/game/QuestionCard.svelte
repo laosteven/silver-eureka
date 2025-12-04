@@ -31,7 +31,11 @@
   // Start typewriter whenever question changes
   $effect(() => {
     const currentQuestion = p.question;
-    const cfg = get(gameConfig)?.typewriter || { enabled: true, speedMsPerChar: 20, delayBeforeMediaMs: 300 };
+    const cfg = get(gameConfig)?.typewriter || {
+      enabled: true,
+      speedMsPerChar: 20,
+      delayBeforeMediaMs: 300,
+    };
     const enabled = cfg.enabled ?? true;
     const speed = cfg.speedMsPerChar ?? 20;
     const delayBeforeMedia = cfg.delayBeforeMediaMs ?? 300;

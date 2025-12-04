@@ -67,7 +67,7 @@ export async function playerEmojiReact(emoji: string) {
     spread: 100,
     shapes: [emojiShape],
     origin: { x: Math.random(), y: 1 },
-    scalar: (Math.random() * 3) + 1,
+    scalar: Math.random() * 3 + 1,
   });
 }
 

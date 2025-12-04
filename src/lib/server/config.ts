@@ -59,7 +59,8 @@ export function loadGameConfig(): GameConfig {
         typewriter: {
           enabled: parsed.typewriter?.enabled ?? FALLBACK.typewriter?.enabled,
           speedMsPerChar: parsed.typewriter?.speedMsPerChar ?? FALLBACK.typewriter?.speedMsPerChar,
-          delayBeforeMediaMs: parsed.typewriter?.delayBeforeMediaMs ?? FALLBACK.typewriter?.delayBeforeMediaMs,
+          delayBeforeMediaMs:
+            parsed.typewriter?.delayBeforeMediaMs ?? FALLBACK.typewriter?.delayBeforeMediaMs,
         },
       } as GameConfig;
     } catch (err) {
