@@ -154,14 +154,10 @@
   });
 </script>
 
-<div class="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500/30">
+<div class="min-h-screen bg-blue-950 dark:bg-slate-950 text-slate-100 font-sans selection:bg-amber-500/30">
   <div
     class="flex flex-col items-center justify-center min-h-screen p-6 text-center space-y-12 relative overflow-hidden"
   >
-    <div
-      class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(30,58,138,.2),_rgba(2,6,23),_rgba(2,6,23))] from-blue-900/20 via-slate-950 to-slate-950 z-0"
-    ></div>
-
     <div class="relative z-10 space-y-6 max-w-2xl w-full">
       {#if !$connected}
         <div class="flex items-center justify-center flex-1">

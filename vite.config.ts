@@ -1,8 +1,9 @@
-import "dotenv/config";
-import tailwindcss from "@tailwindcss/vite";
 import { sveltekit } from "@sveltejs/kit/vite";
-import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
+import "dotenv/config";
 import type { Server as HTTPServer } from "http";
+import { defineConfig } from "vite";
+import pkg from './package.json';
 
 export default defineConfig(() => {
   return {
@@ -24,5 +25,8 @@ export default defineConfig(() => {
     optimizeDeps: {
       include: ["svelte-sonner"],
     },
+  define: {
+    'import.meta.env.PACKAGE_VERSION': JSON.stringify(pkg.version),
+  },
   };
 });

@@ -99,7 +99,7 @@ categories:
         answer: "What is the Super Bowl?"
 
 emoji:
-  cost: 10
+  cost: 5
   allowNegative: false
   maxActive: 5
   cooldownMs: 0
