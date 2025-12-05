@@ -8,7 +8,9 @@
 
 <div class="grid gap-2" style={`grid-template-columns: repeat(${p.categories.length}, 1fr)`}>
   {#each p.categories as category}
-    <div class="bg-blue-800 text-white p-4 text-center font-bold text-lg rounded-t">
+    <div
+      class="bg-blue-800 text-white p-4 text-center font-bold text-lg rounded-t flex items-center justify-center"
+    >
       {category.name}
     </div>
   {/each}

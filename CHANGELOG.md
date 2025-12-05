@@ -1,10 +1,9 @@
 # [1.2.0](https://github.com/laosteven/trivia-n-chill/compare/v1.1.2...v1.2.0) (2025-12-04)
 
-
 ### Features
 
-* cheers sound on leaderboard ([783ed51](https://github.com/laosteven/trivia-n-chill/commit/783ed51756471b72398aaf36170086dba6ae36e5))
-* recent emojis and mobile support ([0ed583d](https://github.com/laosteven/trivia-n-chill/commit/0ed583d3de116dbe4531d7b8be4bbca35caecb72))
+- cheers sound on leaderboard ([783ed51](https://github.com/laosteven/trivia-n-chill/commit/783ed51756471b72398aaf36170086dba6ae36e5))
+- recent emojis and mobile support ([0ed583d](https://github.com/laosteven/trivia-n-chill/commit/0ed583d3de116dbe4531d7b8be4bbca35caecb72))
 
 ## [1.1.2](https://github.com/laosteven/trivia-n-chill/compare/v1.1.1...v1.1.2) (2025-12-03)
 

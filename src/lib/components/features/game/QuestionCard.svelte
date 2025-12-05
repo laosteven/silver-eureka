@@ -89,7 +89,7 @@
   </CardHeader>
   <CardContent class="space-y-6">
     <div class="bg-blue-900 text-white p-8 rounded-lg text-center">
-      <p class="text-2xl">{displayedText}{typing ? "|" : ""}</p>
+      <p class="text-3xl font-bold">{displayedText}{typing ? "|" : ""}</p>
 
       {#if showMedia && p.question?.questionImage}
         {#if p.isVideo(p.question.questionImage)}
