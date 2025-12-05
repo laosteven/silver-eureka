@@ -123,7 +123,9 @@
           {$gameState.players.length} player(s) joined
         </p>
         <div class="mt-4 flex items-center justify-center gap-4">
-          <RenameDialog value={player.currentPlayer?.name || ""} />
+          <RenameDialog value={player.currentPlayer?.name}>
+            <Button variant="outline">Change name</Button>
+          </RenameDialog>
           <EmojiPickerReaction />
         </div>
       </CardContent>
@@ -144,7 +146,9 @@
         <p class="text-muted-foreground">Waiting for host to select a question...</p>
 
         <div class="mt-4 flex items-center justify-center gap-4">
-          <RenameDialog value={player.currentPlayer?.name || ""} />
+          <RenameDialog value={player.currentPlayer?.name}>
+            <Button variant="outline">Change name</Button>
+          </RenameDialog>
           <EmojiPickerReaction />
         </div>
       </CardContent>

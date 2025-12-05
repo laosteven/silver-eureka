@@ -154,7 +154,9 @@
   });
 </script>
 
-<div class="min-h-screen bg-blue-950 dark:bg-slate-950 text-slate-100 font-sans selection:bg-amber-500/30">
+<div
+  class="min-h-screen bg-blue-950 dark:bg-slate-950 text-slate-100 font-sans selection:bg-amber-500/30"
+>
   <div
     class="flex flex-col items-center justify-center min-h-screen p-6 text-center space-y-12 relative overflow-hidden"
   >
@@ -517,4 +519,4 @@
   </div>
 </div>
 
-<Toaster richColors position="top-right" />
+<Toaster richColors position="top-left" />

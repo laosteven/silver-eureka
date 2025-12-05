@@ -5,11 +5,14 @@
   import { Input } from "$lib/components/ui/input";
   import { usePlayer } from "$lib/composables/usePlayer.svelte";
   import { validateUsername } from "$lib/utils/validation";
+  import type { Snippet } from "svelte";
 
   let {
     value = $bindable(""),
+    children,
   }: {
-    value: string;
+    value?: string;
+    children: Snippet | null;
   } = $props();
 
   const player = usePlayer();
@@ -53,13 +56,13 @@
 
 <Dialog.Root bind:open>
   <Dialog.Trigger
-    class={buttonVariants({ variant: "outline" })}
     onclick={() => {
       newUsername = value;
       renameError = null;
       open = true;
-    }}>Change name</Dialog.Trigger
-  >
+    }}>
+    {@render children?.()}
+  </Dialog.Trigger>
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>Change your name</Dialog.Title>

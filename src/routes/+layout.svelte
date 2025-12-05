@@ -6,7 +6,6 @@
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import { gameConfig, initSocket } from "$lib/stores/socket";
-  import Github from "@lucide/svelte/icons/github";
   import { ModeWatcher } from "mode-watcher";
   import { onMount } from "svelte";
   import "./layout.css";
@@ -32,15 +31,6 @@
     <div class="relative">
       <div class="absolute top-4 right-4 z-50">
         <ButtonGroup>
-          <a
-            href="https://github.com/laosteven/trivia-n-chill"
-            target="_blank"
-            rel="noopener noreferrer"
-            class={buttonVariants({ variant: "outline", size: "icon" })}
-            title="View on GitHub"
-          >
-            <Github />
-          </a>
           <ToggleMode />
           <Sidebar.Trigger class={buttonVariants({ variant: "outline", size: "icon" })} />
         </ButtonGroup>
