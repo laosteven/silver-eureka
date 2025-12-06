@@ -45,6 +45,7 @@ export const gameState = writable<ClientGameState & { showAnswer?: boolean }>({
   buzzerOrder: [],
   buzzerLocked: true,
   gamePhase: "lobby",
+  scoringEnabled: true,
   showAnswer: false,
 });
 export const gameConfig = writable<GameConfigClient>({
@@ -311,17 +312,10 @@ export function showScoring() {
 
 export function showLeaderboard() {
   socket?.emit("showLeaderboard");
+}
 
-  try {
-    const url = "/sounds/cheers.mp3";
-    const a = new Audio(url);
-    a.preload = "auto";
-    a.play().catch(() => {});
-  } catch (e) {
-    console.debug("Play correct sound failed", e);
-  }
-
-  fullQuestion.set(null);
+export function toggleScoring() {
+  socket?.emit("toggleScoring");
 }
 
 export function backToGame() {

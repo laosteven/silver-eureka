@@ -3,7 +3,7 @@
  * Manages the core game state and logic
  */
 
-import type { GameState, Question, BuzzEvent, GamePhase } from "../../types";
+import type { BuzzEvent, GamePhase, GameState, Question } from "../../types";
 import { PlayerService } from "./player.service";
 
 export class GameStateService {
@@ -22,6 +22,7 @@ export class GameStateService {
       gamePhase: "lobby",
       hostConnected: false,
       showAnswer: false,
+      scoringEnabled: true,
     };
   }
 
@@ -140,5 +141,12 @@ export class GameStateService {
     this.state.currentQuestion = null;
     this.state.currentCategory = null;
     this.state.showAnswer = false;
+  }
+
+  /**
+   * Toggle scoring visibility
+   */
+  setScoringEnabled(enabled: boolean): void {
+    this.state.scoringEnabled = enabled;
   }
 }

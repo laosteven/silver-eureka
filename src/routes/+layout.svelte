@@ -29,7 +29,7 @@
 <Sidebar.Provider open={false}>
   <Sidebar.Inset>
     <div class="relative">
-      <div class="absolute top-4 right-4 z-50">
+      <div class="absolute top-5 right-5 z-50">
         <ButtonGroup>
           <ToggleMode />
           <Sidebar.Trigger class={buttonVariants({ variant: "outline", size: "icon" })} />

@@ -9,13 +9,16 @@
   import Minus from "@lucide/svelte/icons/minus";
   import Plus from "@lucide/svelte/icons/plus";
   import type { Snippet } from "svelte";
+  import type { ClassValue } from "svelte/elements";
 
   let {
     player,
     children,
+    class: className,
   }: {
     player: Player;
     children: Snippet | null;
+    class?: ClassValue | null | undefined;
   } = $props();
 
   let selected: Player | null = null;
@@ -72,10 +75,7 @@
 </script>
 
 <Dialog.Root bind:open>
-  <Dialog.Trigger
-    onclick={() => openEditor(player)}
-    class="flex text-xs font-normal w-full justify-between rounded-lg p-2"
-  >
+  <Dialog.Trigger onclick={() => openEditor(player)} class={className}>
     {@render children?.()}
   </Dialog.Trigger>
   <Dialog.Content>

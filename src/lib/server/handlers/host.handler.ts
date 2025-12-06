@@ -138,6 +138,15 @@ export class HostHandler {
   }
 
   /**
+   * Handle toggle scoring visibility (host only)
+   */
+  handleToggleScoring(): void {
+    const state = this.gameStateService.getState();
+    const next = !(state.scoringEnabled ?? true);
+    this.gameStateService.setScoringEnabled(next);
+  }
+
+  /**
    * Handle back to game from leaderboard
    */
   handleBackToGame(): void {

@@ -3,6 +3,9 @@
   import GameBoard from "$lib/components/features/game/GameBoard.svelte";
   import QuestionCard from "$lib/components/features/game/QuestionCard.svelte";
   import HostControls from "$lib/components/features/host/HostControls.svelte";
+  import HostEndGameDialog from "$lib/components/features/host/HostEndGameDialog.svelte";
+  import HostRemoveAllPlayersDialog from "$lib/components/features/host/HostRemoveAllPlayersDialog.svelte";
+  import HostRemoveDisconnectedDialog from "$lib/components/features/host/HostRemoveDisconnectedDialog.svelte";
   import ChartPhase from "$lib/components/features/leaderboard/ChartPhase.svelte";
   import Leaderboard from "$lib/components/features/leaderboard/Leaderboard.svelte";
   import { Button } from "$lib/components/ui/button";
@@ -44,10 +47,6 @@
   const buzzer = useBuzzer();
   const media = useMedia();
 
-  let showResetConfirm = $state(false);
-  let showPlayAgainConfirm = $state(false);
-  let showClearPlayersConfirm = $state(false);
-  let showClearDisconnectedConfirm = $state(false);
   let editingPlayerId = $state<string | null>(null);
   let editingName = $state("");
   let editError = $state("");
@@ -64,58 +63,6 @@
       if (browser) hostLeave();
     };
   });
-
-  function handleResetGame() {
-    showResetConfirm = true;
-  }
-
-  function confirmReset() {
-    game.resetGame();
-    showResetConfirm = false;
-  }
-
-  function cancelReset() {
-    showResetConfirm = false;
-  }
-
-  function handlePlayAgain() {
-    showPlayAgainConfirm = true;
-  }
-
-  function confirmPlayAgain() {
-    game.startGame();
-    showPlayAgainConfirm = false;
-  }
-
-  function cancelPlayAgain() {
-    showPlayAgainConfirm = false;
-  }
-
-  function handleClearPlayers() {
-    showClearPlayersConfirm = true;
-  }
-
-  function confirmClearPlayers() {
-    game.clearPlayers();
-    showClearPlayersConfirm = false;
-  }
-
-  function cancelClearPlayers() {
-    showClearPlayersConfirm = false;
-  }
-
-  function handleClearDisconnected() {
-    showClearDisconnectedConfirm = true;
-  }
-
-  function confirmClearDisconnected() {
-    game.clearDisconnected();
-    showClearDisconnectedConfirm = false;
-  }
-
-  function cancelClearDisconnected() {
-    showClearDisconnectedConfirm = false;
-  }
 
   function startEditingName(playerId: string, currentName: string) {
     editingPlayerId = playerId;
@@ -213,11 +160,19 @@
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onclick={handleClearDisconnected}>
-                              Remove disconnected
+                            <DropdownMenuItem>
+                              {#snippet child({ props })}
+                                <HostRemoveDisconnectedDialog {...props}>
+                                  Remove disconnected
+                                </HostRemoveDisconnectedDialog>
+                              {/snippet}
                             </DropdownMenuItem>
-                            <DropdownMenuItem onclick={handleClearPlayers}>
-                              Clear players
+                            <DropdownMenuItem>
+                              {#snippet child({ props })}
+                                <HostRemoveAllPlayersDialog {...props}>
+                                  Clear players
+                                </HostRemoveAllPlayersDialog>
+                              {/snippet}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -298,13 +253,7 @@
         <!-- Game Board View -->
         <div class="flex items-center justify-center flex-1">
           <div class="max-w-7xl w-full">
-            <HostControls
-              title={$gameConfig.title}
-              canStart={$gameState.players.length > 0}
-              onStart={() => game.startGame()}
-              onShowLeaderboard={() => game.showScoring()}
-              onReset={handleResetGame}
-            />
+            <HostControls title={$gameConfig.title} onRevealScoring={() => game.showScoring()} />
 
             <!-- Game Board -->
             <GameBoard
@@ -447,97 +396,13 @@
                 <Leaderboard players={game.getLeaderboard()} />
                 <div class="mt-8 flex justify-center gap-4">
                   <Button onclick={() => game.backToGame()} variant="outline">Back to game</Button>
-                  <Button onclick={handlePlayAgain} variant="default" class="px-8"
-                    >Play again</Button
-                  >
-                  <Button onclick={handleResetGame} variant="secondary">Back to lobby</Button>
+                  <HostEndGameDialog>
+                    <Button>Back to lobby</Button>
+                  </HostEndGameDialog>
                 </div>
               </CardContent>
             </Card>
           </div>
-        </div>
-      {/if}
-
-      <!-- Reset Confirmation Modal -->
-      {#if showResetConfirm}
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card class="w-full max-w-md mx-4">
-            <CardHeader>
-              <CardTitle class="text-center">Reset game?</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
-              <p class="text-center text-muted-foreground">
-                Are you sure you want to reset the game? All scores will be lost and players will
-                return to the lobby.
-              </p>
-              <div class="flex justify-center gap-4">
-                <Button onclick={cancelReset} variant="outline">Cancel</Button>
-                <Button onclick={confirmReset} variant="destructive">Reset game</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      {/if}
-
-      <!-- Play Again Confirmation Modal -->
-      {#if showPlayAgainConfirm}
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card class="w-full max-w-md mx-4">
-            <CardHeader>
-              <CardTitle class="text-center">Play again?</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
-              <p class="text-center text-muted-foreground">
-                This will reset all scores to 0 and start a new game with the same players.
-              </p>
-              <div class="flex justify-center gap-4">
-                <Button onclick={cancelPlayAgain} variant="outline">Cancel</Button>
-                <Button onclick={confirmPlayAgain} variant="default">Play again</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      {/if}
-
-      <!-- Clear Players Confirmation Modal -->
-      {#if showClearPlayersConfirm}
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card class="w-full max-w-md mx-4">
-            <CardHeader>
-              <CardTitle class="text-center">Remove all players?</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
-              <p class="text-center text-muted-foreground">
-                This will kick everyone and return to an empty lobby. This action cannot be undone.
-              </p>
-              <div class="flex justify-center gap-4">
-                <Button onclick={cancelClearPlayers} variant="outline">Cancel</Button>
-                <Button onclick={confirmClearPlayers} variant="destructive">Remove all</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      {/if}
-
-      <!-- Clear Disconnected Confirmation Modal -->
-      {#if showClearDisconnectedConfirm}
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card class="w-full max-w-md mx-4">
-            <CardHeader>
-              <CardTitle class="text-center">Remove disconnected players?</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
-              <p class="text-center text-muted-foreground">
-                This will remove only players marked as disconnected.
-              </p>
-              <div class="flex justify-center gap-4">
-                <Button onclick={cancelClearDisconnected} variant="outline">Cancel</Button>
-                <Button onclick={confirmClearDisconnected} variant="secondary"
-                  >Remove disconnected</Button
-                >
-              </div>
-            </CardContent>
-          </Card>
         </div>
       {/if}
     </div>

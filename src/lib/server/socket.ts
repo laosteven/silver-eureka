@@ -39,6 +39,7 @@ function getClientGameState(): ClientGameState {
     buzzerLocked: gameState.buzzerLocked,
     gamePhase: gameState.gamePhase,
     showAnswer: gameState.showAnswer,
+    scoringEnabled: gameState.scoringEnabled ?? true,
   };
 }
 
@@ -214,6 +215,12 @@ export function initSocketServer(server: HTTPServer) {
     // Host shows leaderboard
     socket.on(SOCKET_EVENTS.SHOW_LEADERBOARD, () => {
       hostHandler.handleShowLeaderboard();
+      broadcastGameState();
+    });
+
+    // Host toggles scoring visibility
+    socket.on(SOCKET_EVENTS.TOGGLE_SCORING, () => {
+      hostHandler.handleToggleScoring();
       broadcastGameState();
     });
 

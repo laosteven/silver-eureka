@@ -1,18 +1,18 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button";
+  import Trophy from "@lucide/svelte/icons/trophy";
+
   const p = $props<{
     title: string;
-    canStart: boolean;
-    onStart: () => void;
-    onShowLeaderboard: () => void;
-    onReset: () => void;
+    onRevealScoring: () => void;
   }>();
 </script>
 
 <div class="flex justify-between items-center mb-4">
-  <h1 class="text-3xl font-bold text-white">{p.title}</h1>
+  <h1 class="text-2xl uppercase font-bold text-white">{p.title}</h1>
   <div class="space-x-2">
-    <Button onclick={p.onShowLeaderboard} variant="secondary">Show leaderboard</Button>
-    <Button onclick={p.onReset} variant="destructive">Reset game</Button>
+    <Button onclick={p.onRevealScoring} variant="ghost">
+      <Trophy /> Finish game
+    </Button>
   </div>
 </div>

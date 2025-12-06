@@ -218,12 +218,14 @@
             ${player.currentPlayer?.score ?? 0}
           </p>
         </div>
-        <div class="bg-secondary p-4 rounded-lg">
-          <p class="text-sm text-muted-foreground">Final rank</p>
-          <p class="text-2xl font-bold">
-            #{rank} of {$gameState.players.length}
-          </p>
-        </div>
+        {#if $gameState.scoringEnabled}
+          <div class="bg-secondary p-4 rounded-lg">
+            <p class="text-sm text-muted-foreground">Final rank</p>
+            <p class="text-2xl font-bold">
+              #{rank} of {$gameState.players.length}
+            </p>
+          </div>
+        {/if}
 
         <div class="mt-4 flex items-center justify-center gap-4">
           <EmojiPickerReaction />
