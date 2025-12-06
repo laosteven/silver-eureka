@@ -36,6 +36,7 @@ interface FullQuestion {
 let socket: Socket | null = null;
 
 export const connected = writable(false);
+export const isHost = writable(false);
 export const gameState = writable<ClientGameState & { showAnswer?: boolean }>({
   players: [],
   currentQuestion: null,
@@ -77,6 +78,7 @@ export function initSocket() {
 
   socket.on("disconnect", () => {
     connected.set(false);
+    isHost.set(false);
   });
 
   socket.on("gameState", (state: ClientGameState & { showAnswer?: boolean }) => {
@@ -119,6 +121,15 @@ export function initSocket() {
     buzzerSound.set(data);
     // Clear after a short delay
     setTimeout(() => buzzerSound.set(null), 100);
+  });
+
+  // Host confirmation from server
+  socket.on("hostConfirmed", () => {
+    isHost.set(true);
+  });
+
+  socket.on("hostLeft", () => {
+    isHost.set(false);
   });
 
   socket.on("joinError", (data: { error: string }) => {
@@ -182,18 +193,65 @@ export function hostJoin() {
   socket?.emit("hostJoin");
 }
 
-export function playerJoin(username: string): Promise<{ success: boolean; error?: string }> {
+export function hostLeave(): Promise<void> {
   return new Promise((resolve) => {
     if (!socket) {
-      resolve({ success: false, error: "Not connected" });
+      isHost.set(false);
+      resolve();
       return;
     }
-    socket.emit("playerJoin", username, (result: { success: boolean; error?: string }) => {
-      if (!result.success) {
-        joinError.set(result.error || "Failed to join");
+
+    // Listen once for server confirmation
+    const onLeft = () => {
+      isHost.set(false);
+      socket?.off("hostLeft", onLeft);
+      resolve();
+    };
+
+    socket.on("hostLeft", onLeft);
+    // Ask server to drop host role
+    socket.emit("hostLeft");
+
+    // Safety timeout: if server doesn't respond, clear host locally after 2s
+    setTimeout(() => {
+      socket?.off("hostLeft", onLeft);
+      isHost.set(false);
+      resolve();
+    }, 2000);
+  });
+}
+
+export async function hostToPlayer(name: string): Promise<{ success: boolean; error?: string }>
+{
+  // drop host role first
+  await hostLeave();
+  // then attempt to join as player
+  return playerJoin(name);
+}
+
+export function playerJoin(username: string): Promise<{ success: boolean; error?: string }> {
+  return new Promise((resolve) => {
+    // If this client is currently a host, drop the host role first so the server
+    // does not reject the join attempt.
+    const tryJoin = async () => {
+      if (get(isHost)) {
+        await hostLeave();
       }
-      resolve(result);
-    });
+
+      if (!socket) {
+        resolve({ success: false, error: "Not connected" });
+        return;
+      }
+
+      socket.emit("playerJoin", username, (result: { success: boolean; error?: string }) => {
+        if (!result.success) {
+          joinError.set(result.error || "Failed to join");
+        }
+        resolve(result);
+      });
+    };
+
+    void tryJoin();
   });
 }
 

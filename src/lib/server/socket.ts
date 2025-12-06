@@ -98,6 +98,12 @@ export function initSocketServer(server: HTTPServer) {
       broadcastGameState();
     });
 
+    // Host leaves explicitly
+    socket.on(SOCKET_EVENTS.HOST_LEFT, () => {
+      hostHandler.handleHostLeave(socket);
+      broadcastGameState();
+    });
+
     // Manual config reload (host only)
     socket.on(SOCKET_EVENTS.RELOAD_CONFIG, () => {
       hostHandler.handleReloadConfig(socket, () => {
@@ -266,6 +272,10 @@ export function initSocketServer(server: HTTPServer) {
 
     // Disconnect handling
     socket.on("disconnect", () => {
+      // If this socket was marked as host, inform host handler
+      if ((socket as any).data?.isHost) {
+        hostHandler.handleHostLeave(socket);
+      }
       playerHandler.handleDisconnect(socket);
       broadcastGameState();
     });

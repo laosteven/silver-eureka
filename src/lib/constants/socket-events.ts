@@ -42,6 +42,8 @@ export const SOCKET_EVENTS = {
   // State broadcast events
   GAME_STATE: "gameState",
   GAME_CONFIG: "gameConfig",
+  HOST_CONFIRMED: "hostConfirmed",
+  HOST_LEFT: "hostLeft",
   FULL_QUESTION: "fullQuestion",
   BUZZER_SOUND: "buzzerSound",
   UPDATE_USERNAME: "updateUsername",

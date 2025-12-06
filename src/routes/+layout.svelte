@@ -5,7 +5,7 @@
   import { buttonVariants } from "$lib/components/ui/button";
   import ButtonGroup from "$lib/components/ui/button-group/button-group.svelte";
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-  import { gameConfig, initSocket } from "$lib/stores/socket";
+  import { initSocket } from "$lib/stores/socket";
   import { ModeWatcher } from "mode-watcher";
   import { onMount } from "svelte";
   import "./layout.css";
@@ -20,7 +20,7 @@
 </script>
 
 <svelte:head>
-  <title>{$gameConfig.title}</title>
+  <title>Trivia & Chill</title>
   <meta name="description" content="Self-hosted trivia game" />
 </svelte:head>
 

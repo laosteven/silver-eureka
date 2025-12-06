@@ -26,6 +26,7 @@
     gameState,
     hostEmojiReaction,
     hostJoin,
+    hostLeave,
     initSocket,
   } from "$lib/stores/socket";
   import { celebrateCorrect, celebrateLeaderboard } from "$lib/utils/confetti";
@@ -58,6 +59,9 @@
       buzzer.init();
       buzzer.setupAutoPlay();
     }
+    return () => {
+      if (browser) hostLeave();
+    };
   });
 
   function handleResetGame() {

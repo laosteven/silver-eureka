@@ -32,9 +32,28 @@ export class HostHandler {
    */
   handleHostJoin(socket: Socket): void {
     socket.join("host");
+    socket.data.isHost = true;
     const gameState = this.gameStateService.getState();
     gameState.hostConnected = true;
-    console.log("Host connected");
+    // confirm to the joining socket that they are host
+    socket.emit(SOCKET_EVENTS.HOST_CONFIRMED);
+    console.log("Host connected (confirmed)");
+  }
+
+  /**
+   * Handle host leave event
+   */
+  handleHostLeave(socket: Socket): void {
+    try {
+      socket.leave("host");
+      socket.data.isHost = false;
+      const gameState = this.gameStateService.getState();
+      gameState.hostConnected = false;
+      socket.emit(SOCKET_EVENTS.HOST_LEFT);
+      console.log("Host disconnected (clean)");
+    } catch (e) {
+      console.warn("Error during host leave", e);
+    }
   }
 
   /**
