@@ -1,3 +1,21 @@
+# [1.3.0](https://github.com/laosteven/trivia-n-chill/compare/v1.2.0...v1.3.0) (2025-12-06)
+
+
+### Bug Fixes
+
+* refactor host/player sidebar and host state management ([4871231](https://github.com/laosteven/trivia-n-chill/commit/487123173ae050f8a9026fa3a519d3c245825105))
+* sidebar styling ([0b3ba17](https://github.com/laosteven/trivia-n-chill/commit/0b3ba17def4ffe673a3a1c2c7c483a13543cde49))
+
+
+### Features
+
+* host dialogs and scoring visibility toggle ([17223d7](https://github.com/laosteven/trivia-n-chill/commit/17223d7edb838b3f1e6eb649d9ef40e4b5e43a5f))
+* Lottie animations ([fe25d27](https://github.com/laosteven/trivia-n-chill/commit/fe25d27480cf9e725e4b7f491a2077b7ae7c7029))
+* player sidebar ([1f0e274](https://github.com/laosteven/trivia-n-chill/commit/1f0e2743d081c3ffa25d135d3ffa9aab0c7d808d))
+* redesign ([081f762](https://github.com/laosteven/trivia-n-chill/commit/081f76241023ce08d1b2361ee31f5b91b2bf79d6))
+* refactor player management ([11abed8](https://github.com/laosteven/trivia-n-chill/commit/11abed88ad5f275eb68be9049a68cea8a000349e))
+* scoring chart ([a7daf8c](https://github.com/laosteven/trivia-n-chill/commit/a7daf8c05e1389ee0c274ec2e1072b6cedf7ae17))
+
 # [1.2.0](https://github.com/laosteven/trivia-n-chill/compare/v1.1.2...v1.2.0) (2025-12-04)
 
 ### Features
